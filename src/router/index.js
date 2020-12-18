@@ -21,11 +21,22 @@ const routes = [{
         component: () => import('@/views/HomeAdmin')
       },
       {
-        // UserProfile will be rendered inside User's <router-view>
-        // when /user/:id/profile is matched
+        
         path: 'adminLoginAdmin',
         name: 'adminLoginAdmin',
         component: () => import('@/views/LoginAdmin')
+      },
+      {
+        
+        path: 'adminArticulo',
+        name: 'adminArticulo',
+        component: () => import('@/components/Articulo')
+      },
+      {
+        
+        path: 'adminCategoria',
+        name: 'adminCategoria',
+        component: () => import('@/components/Categoria')
       },
 
     ],

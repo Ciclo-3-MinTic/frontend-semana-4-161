@@ -5,7 +5,7 @@
       <v-app id="sandbox">
         <v-navigation-drawer
           v-model="primaryDrawer.model"
-          
+          :clipped="true"
           app
          
         >
@@ -54,19 +54,19 @@
                 </v-card-text>
               </v-card>
 
-              <v-list-item :to="{ name: 'adminLoginAdmin' }">
+              <v-list-item :to="{ name: '' }">
                 <v-list-item-action>
                   <v-icon>mdi-table-account</v-icon>
                 </v-list-item-action>
                 <v-list-item-title> Usuarios </v-list-item-title>
               </v-list-item>
-              <v-list-item :to="{ name: 'adminLoginAdmin' }">
+              <v-list-item :to="{ name: 'adminArticulo' }">
                 <v-list-item-action>
                   <v-icon>mdi-file-table-box-multiple</v-icon>
                 </v-list-item-action>
                 <v-list-item-title> Articulos </v-list-item-title>
               </v-list-item>
-              <v-list-item :to="{ name: 'adminLoginAdmin' }">
+              <v-list-item :to="{ name: 'adminCategoria' }">
                 <v-list-item-action>
                   <v-icon>mdi-folder-table</v-icon>
                 </v-list-item-action>
@@ -78,7 +78,7 @@
           </v-list>
         </v-navigation-drawer>
 
-        <v-app-bar :clipped-left="false" app>
+        <v-app-bar :clipped-left="true" app>
           <v-app-bar-nav-icon
             @click.stop="primaryDrawer.model = !primaryDrawer.model"
           ></v-app-bar-nav-icon>
