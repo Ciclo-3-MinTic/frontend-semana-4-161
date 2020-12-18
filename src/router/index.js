@@ -1,22 +1,31 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import Home from '../views/Home.vue'
+import HomeUsuario from '@/views/HomeUsuario'
 
 Vue.use(VueRouter)
 
 const routes = [
   {
-    path: '/',
-    name: 'Home',
-    component: Home
+    path: "/",
+    name: "HomeUsuario",
+    component: HomeUsuario,
+    
   },
   {
-    path: '/about',
-    name: 'About',
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "about" */ '../views/About.vue')
+    path: '/admin',
+    name: 'HomeAdmin',
+    component: () => import('@/views/HomeAdmin'),
+    meta: {
+      requiresAuth: false
+    }
+  },
+  {
+    path: '/loginAdmin',
+    name: 'LoginAdmin',
+    component: () => import('@/views/LoginAdmin'),
+    meta: {
+      isAuth: true
+    }
   }
 ]
 
@@ -24,6 +33,30 @@ const router = new VueRouter({
   mode: 'history',
   base: process.env.BASE_URL,
   routes
-})
+});
+router.beforeEach((to, from, next) => {
+  if (to.matched.some(record => record.meta.requiresAuth)) {
+    if (localStorage.getItem("jwt") == null) {
+      next({
+        path: "/loginAdmin"
+      });
+    } else {
+      next();
+    }
+  } else {
+    next();
+  }
+  if (to.matched.some(record => record.meta.isAuth)) {
+    if (localStorage.getItem("jwt") != null) {
+      next({
+        path: "/home"
+      });
+    } else {
+      next();
+    }
+  } else {
+    next();
+  }
+});
 
 export default router
