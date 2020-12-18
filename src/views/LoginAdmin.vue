@@ -11,7 +11,7 @@ export default {
   },
 };
 </script>
-LoginBase
+
 
 <style>
 </style>

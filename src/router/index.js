@@ -4,17 +4,31 @@ import HomeUsuario from '@/views/HomeUsuario'
 
 Vue.use(VueRouter)
 
-const routes = [
-  {
+const routes = [{
     path: "/",
     name: "HomeUsuario",
     component: HomeUsuario,
-    
+
   },
   {
     path: '/admin',
     name: 'HomeAdmin',
     component: () => import('@/views/HomeAdmin'),
+    children: [{
+        // UserProfile will be rendered inside User's <router-view>
+        // when /user/:id/profile is matched
+        path: '/',
+        component: () => import('@/views/HomeAdmin')
+      },
+      {
+        // UserProfile will be rendered inside User's <router-view>
+        // when /user/:id/profile is matched
+        path: 'adminLoginAdmin',
+        name: 'adminLoginAdmin',
+        component: () => import('@/views/LoginAdmin')
+      },
+
+    ],
     meta: {
       requiresAuth: false
     }

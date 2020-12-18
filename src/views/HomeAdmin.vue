@@ -1,37 +1,32 @@
 <template>
   <div>
-    <h1>admin</h1>
+    
     <v-app id="inspire">
       <v-app id="sandbox">
         <v-navigation-drawer
           v-model="primaryDrawer.model"
-          :clipped="true"
+          
           app
-          overflow
+         
         >
-          <v-list dense>
-            <template>
-              <v-card >
-                <v-card-text class="pb-0">
+          <v-list dense class="py-0">
+            <template> 
+              <v-card align="center ">
+                <v-card-text class="pb-0 pt-7">
                   <v-row align="center" justify="space-around">
-                    <v-col align-self="start" class="pa-0 " cols="2">
+                    <v-col align-self="start" class="pa-0" cols="2">
                       <v-avatar color="orange ml-3" size="62">
                         <span class="white--text headline">A</span>
                       </v-avatar>
                     </v-col>
                     <v-col class="py-0" cols="10">
-                      <v-list-item >
+                      <v-list-item>
                         <v-list-item-content class="text-right">
                           <v-list-item-title class="title">
                             rol
                           </v-list-item-title>
-                          <v-list-item-subtitle
-                            >Name</v-list-item-subtitle
-                          >
-                          <v-list-item-subtitle
-                            >Email</v-list-item-subtitle
-                          >
-                          
+                          <v-list-item-subtitle>Name</v-list-item-subtitle>
+                          <v-list-item-subtitle>Email</v-list-item-subtitle>
                         </v-list-item-content>
                       </v-list-item>
                     </v-col>
@@ -72,7 +67,7 @@
                     <v-list-item-title> Almacén </v-list-item-title>
                   </v-list-item-content>
                 </v-list-item>
-                <v-list-item :to="{ name: 'categoria' }">
+                <v-list-item :to="{ name: 'adminLoginAdmin' }">
                   <v-list-item-action>
                     <v-icon>table_chart</v-icon>
                   </v-list-item-action>
@@ -80,7 +75,7 @@
                     <v-list-item-title> Categorías </v-list-item-title>
                   </v-list-item-content>
                 </v-list-item>
-                <v-list-item :to="{ name: 'articulo' }">
+                <v-list-item :to="{ name: 'adminLoginAdmin' }">
                   <v-list-item-action>
                     <v-icon>table_chart</v-icon>
                   </v-list-item-action>
@@ -93,19 +88,24 @@
           </v-list>
         </v-navigation-drawer>
 
-        <v-app-bar :clipped-left="true" app>
+        <v-app-bar :clipped-left="false" app>
           <v-app-bar-nav-icon
             @click.stop="primaryDrawer.model = !primaryDrawer.model"
           ></v-app-bar-nav-icon>
           <v-toolbar-title>Vuetify</v-toolbar-title>
         </v-app-bar>
 
-        <v-main>
-          <v-container fluid>
-            <v-row align="center" justify="center">
+        <v-main col="12">
+        
+            <v-container  col="12"
+              ><!-- <v-row align="center" justify="center">
               <v-col cols="10"> </v-col>
-            </v-row>
-          </v-container>
+            </v-row> -->
+              <v-slide-y-transition >
+                <router-view/>
+              </v-slide-y-transition>
+            </v-container>
+          
         </v-main>
 
         <v-footer app>
@@ -119,7 +119,7 @@
 <script>
 export default {
   name: "HomeAdmin",
-  /* vuetify: new Vuetify(), */
+
   data() {
     return {
       drawers: ["Default (no property)", "Permanent"],
