@@ -53,37 +53,27 @@
                   </v-row>
                 </v-card-text>
               </v-card>
-              <v-list-item @click="home">
+
+              <v-list-item :to="{ name: 'adminLoginAdmin' }">
                 <v-list-item-action>
-                  <v-icon>home</v-icon>
+                  <v-icon>mdi-table-account</v-icon>
                 </v-list-item-action>
-                <v-list-item-title> Inicio </v-list-item-title>
+                <v-list-item-title> Usuarios </v-list-item-title>
               </v-list-item>
-            </template>
-            <template>
-              <v-list-group>
-                <v-list-item slot="activator">
-                  <v-list-item-content>
-                    <v-list-item-title> Almacén </v-list-item-title>
-                  </v-list-item-content>
-                </v-list-item>
-                <v-list-item :to="{ name: 'adminLoginAdmin' }">
-                  <v-list-item-action>
-                    <v-icon>table_chart</v-icon>
-                  </v-list-item-action>
-                  <v-list-item-content>
-                    <v-list-item-title> Categorías </v-list-item-title>
-                  </v-list-item-content>
-                </v-list-item>
-                <v-list-item :to="{ name: 'adminLoginAdmin' }">
-                  <v-list-item-action>
-                    <v-icon>table_chart</v-icon>
-                  </v-list-item-action>
-                  <v-list-item-content>
-                    <v-list-item-title> Artículos </v-list-item-title>
-                  </v-list-item-content>
-                </v-list-item>
-              </v-list-group>
+              <v-list-item :to="{ name: 'adminLoginAdmin' }">
+                <v-list-item-action>
+                  <v-icon>mdi-file-table-box-multiple</v-icon>
+                </v-list-item-action>
+                <v-list-item-title> Articulos </v-list-item-title>
+              </v-list-item>
+              <v-list-item :to="{ name: 'adminLoginAdmin' }">
+                <v-list-item-action>
+                  <v-icon>mdi-folder-table</v-icon>
+                </v-list-item-action>
+                <v-list-item-title> Categorias </v-list-item-title>
+              </v-list-item>
+           
+              
             </template>
           </v-list>
         </v-navigation-drawer>
