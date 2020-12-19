@@ -22,30 +22,18 @@
                   dark
                   flat
                 >
-                  <v-toolbar-title>Login form</v-toolbar-title>
-                  <v-spacer></v-spacer>
-                  <v-tooltip bottom>
-                    <template v-slot:activator="{ on }">
-                      <v-btn
-                        :href="source"
-                        icon
-                        large
-                        target="_blank"
-                        v-on="on"
-                      >
-                        <v-icon>mdi-code-tags</v-icon>
-                      </v-btn>
-                    </template>
-                    <span>Source</span>
-                  </v-tooltip>
+                  <v-toolbar-title >Login</v-toolbar-title>
+                  
+                  
                 </v-toolbar>
                 <v-card-text>
                   <v-form>
                     <v-text-field
-                      label="Login"
+                      label="Email"
                       name="login"
                       prepend-icon="mdi-account"
                       type="text"
+                      v-model="user"
                     ></v-text-field>
   
                     <v-text-field
@@ -54,12 +42,13 @@
                       name="password"
                       prepend-icon="mdi-lock"
                       type="password"
+                      v-model="password"
                     ></v-text-field>
                   </v-form>
                 </v-card-text>
                 <v-card-actions>
                   <v-spacer></v-spacer>
-                  <v-btn color="primary">Login</v-btn>
+                  <v-btn color="primary" @click="$emit('login',user,password )">Login</v-btn>
                 </v-card-actions>
               </v-card>
             </v-col>
@@ -74,6 +63,14 @@
 <script>
 export default {
 name: 'LoginBase',
+ 
+data(){
+  return{
+    user: 'admin@gmail.com',
+    password: 'admin1234',
+   
+  }
+}
 }
 </script>
 

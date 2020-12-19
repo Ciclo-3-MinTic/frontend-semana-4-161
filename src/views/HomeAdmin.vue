@@ -34,7 +34,7 @@
 
                   <v-row align="center" justify="space-around">
                     <v-col cols="6">
-                      <v-btn tile color="error" small>
+                      <v-btn tile color="error" small @click="salir">
                         <v-icon left> mdi-keyboard-backspace </v-icon>
                         Salir
                       </v-btn>
@@ -54,7 +54,7 @@
                 </v-card-text>
               </v-card>
 
-              <v-list-item :to="{ name: 'Login' }">
+              <v-list-item :to="{ name: 'Usuarios' }">
                 <v-list-item-action>
                   <v-icon>mdi-table-account</v-icon>
                 </v-list-item-action>
@@ -128,8 +128,8 @@ export default {
   },
   methods: {
     salir() {
-      /* this.$store.dispatch("salir"); */
-      this.estado = 1;
+      this.$store.dispatch("salirAdmin"); 
+      
     },
 
     ingresar() {

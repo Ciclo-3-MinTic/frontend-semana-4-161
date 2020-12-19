@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
+import store from '../store/index';
 import HomeUsuario from '@/views/HomeUsuario'
 
 Vue.use(VueRouter)
@@ -14,42 +15,57 @@ const routes = [{
     path: '/admin',
     name: 'HomeAdmin',
     component: () => import('@/views/HomeAdmin'),
+    meta: {
+      admin: true,
+    },
     children: [{
-        // UserProfile will be rendered inside User's <router-view>
-        // when /user/:id/profile is matched
+
         path: '/',
-        component: () => import('@/views/HomeAdmin')
+        name: "Base",
+        component: () => import('@/views/HomeAdmin'),
+        meta: {
+          admin: true
+        },
       },
+
       {
-        
-        path: 'login',
-        name: 'Login',
-        component: () => import('@/views/LoginAdmin')
-      },
-      {
-        
+
         path: 'articulos',
         name: 'Articulos',
-        component: () => import('@/views/admin/Articulo')
+        component: () => import('@/views/admin/Articulo'),
+        meta: {
+          admin: true
+        },
       },
       {
 
-        path: 'categotia',
+        path: 'categotias',
         name: 'Categotias',
-        component: () => import('@/views/admin/Categoria')
+        component: () => import('@/views/admin/Categoria'),
+        meta: {
+          admin: true
+        },
+      },
+      {
+
+        path: 'usuarios',
+        name: 'Usuarios',
+        component: () => import('@/views/admin/Usuario'),
+        meta: {
+          admin: true
+        },
       },
 
     ],
-    meta: {
-      requiresAuth: false
-    }
+
   },
   {
-    path: '/loginAdmin',
+    path: '/LoginAdmin',
     name: 'LoginAdmin',
     component: () => import('@/views/LoginAdmin'),
     meta: {
-      isAuth: true
+      admin: true,
+
     }
   }
 ]
@@ -59,29 +75,23 @@ const router = new VueRouter({
   base: process.env.BASE_URL,
   routes
 });
+
 router.beforeEach((to, from, next) => {
-  if (to.matched.some(record => record.meta.requiresAuth)) {
-    if (localStorage.getItem("jwt") == null) {
-      next({
-        path: "/loginAdmin"
-      });
-    } else {
+  
+  if (to.meta.admin) {
+    if (store.state.usuario || to.name === 'LoginAdmin') {
       next();
+    } else {
+      next({
+        name: 'LoginAdmin'
+      });
     }
+
   } else {
     next();
   }
-  if (to.matched.some(record => record.meta.isAuth)) {
-    if (localStorage.getItem("jwt") != null) {
-      next({
-        path: "/home"
-      });
-    } else {
-      next();
-    }
-  } else {
-    next();
-  }
+
+
 });
 
 export default router

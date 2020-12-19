@@ -1,0 +1,219 @@
+<template>
+  <v-layout align-start d-block flex-column block>
+    <v-dialog v-model="dialog">
+      <v-card>
+        <v-card-title>
+          <span class="headline">{{ title }}</span>
+        </v-card-title>
+        <v-card-text>
+          <v-container grid-list-md>
+            <v-layout wrap>
+              <v-flex xs12 sm6 md6>
+                <v-text-field v-model="codigo" label="Código"> </v-text-field>
+              </v-flex>
+              <v-flex xs12 sm6 md6>
+                <v-select
+                  v-model="categoria"
+                  :items="categorias"
+                  label="Categoría"
+                >
+                </v-select>
+              </v-flex>
+              <v-flex xs12 sm12 md12>
+                <v-text-field v-model="nombre" label="Nombre"> </v-text-field>
+              </v-flex>
+              <v-flex xs12 sm6 md6>
+                <v-text-field type="number" v-model="stock" label="Stock">
+                </v-text-field>
+              </v-flex>
+              <v-flex xs12 sm6 md6>
+                <v-text-field v-model="precio_venta" label="precio_venta">
+                </v-text-field>
+              </v-flex>
+              <v-flex xs12 sm12 md12>
+                <v-text-field v-model="descripcion" label="Descripción">
+                </v-text-field>
+              </v-flex>
+              <v-flex xs12 sm12 md12 v-show="valida">
+                <div
+                  class="red--text"
+                  v-for="v in validaMensaje"
+                  :key="v"
+                  v-text="v"
+                ></div>
+              </v-flex>
+            </v-layout>
+          </v-container>
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn color="blue darken-1">Cancelar</v-btn>
+          <v-btn color="blue darken-1">Guardar</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+
+    <data-table-base
+      :title="titles"
+      :articulos="articulos"
+      :headers="headers"
+      @reroll="reroll"
+      @add="add"
+      @edit="edit"
+      @desactive="desactive"
+      @active="active"
+    >
+    </data-table-base>
+  </v-layout>
+</template>
+
+<script>
+import axios from "axios";
+import DataTableBase from "@/components/DataTableBase.vue";
+export default {
+  components: {
+    DataTableBase,
+  },
+  data() {
+    return {
+      dialog: false,
+      title: "Usuario",
+      titles: "Usuarios",
+      articulos: [],
+      headers: [
+        { text: "Código", value: "id", sortable: true, align: "center" },
+        { text: "Nombre", value: "nombre", sortable: true, align: "center" },
+        {
+          text: "Rol",
+          value: "rol",
+          sortable: true,
+          align: "center",
+        },
+        { text: "Email", value: "email", sortable: true, align: "center" },
+
+        {
+          text: "Identificacion",
+          value: "num_documento",
+          sortable: false,
+          align: "center",
+        },
+        {
+          text: "Direccion",
+          value: "direccion",
+          sortable: false,
+          align: "center",
+        },
+        {
+          text: "Telefono",
+          value: "telefono",
+          sortable: false,
+          align: "center",
+        },
+        {
+          text: "Estado",
+          value: "estado",
+          sortable: false,
+          align: "center",
+        },
+        {
+          text: "Opciones",
+          value: "opciones",
+          sortable: false,
+          align: "center",
+        },
+      ],
+    };
+  },
+  computed: {
+    formTitle() {
+      /* return this.editedIndex === -1 ? "Nuevo registro" : "Editar registro"; */
+    },
+  },
+  watch: {
+    dialog(val) {
+      /* val || this.close(); */
+    },
+  },
+  created() {
+    this.listar();
+    /* this.selectCategoria(); */
+  },
+  methods: {
+    editItem(item) {
+      /*  this.categoria = item.categoria.id; */
+      this.codigo = item.codigo;
+      this.nombre = item.nombre;
+      this.stock = item.stock;
+      this.precio_venta = item.precio_venta;
+      this.descripcion = item.descripcion;
+      this.editedIndex = 1;
+    },
+    clearItem() {
+      /*  this.categoria = item.categoria.id; */
+      this.codigo = "";
+      this.nombre = "";
+      this.stock = "";
+      this.precio_venta = "";
+      this.descripcion = "";
+      this.editedIndex = "";
+    },
+    activarDesactivarMostrar(accion, item) {
+      this.adModal = 1;
+      this.adNombre = item.nombre;
+      this.adId = item.id;
+      if (accion == 1) {
+        this.adAccion = 1;
+      } else if (accion == 2) {
+        this.adAccion = 2;
+      } else {
+        this.adModal = 0;
+      }
+    },
+    activarDesactivarCerrar() {
+      this.adModal = 0;
+    },
+
+    closeInfo() {
+      this.dialog = false;
+    },
+    openInfo() {
+      this.dialog = true;
+    },
+
+    reroll() {
+      console.log("reroll");
+    },
+    add() {
+      this.clearItem();
+      this.openInfo();
+    },
+    edit(item) {
+      console.log(item);
+      this.editItem(item);
+      this.openInfo();
+    },
+    desactive(item) {
+      console.log("desactive");
+    },
+    active(item) {
+      console.log("active");
+    },
+    listar() {
+      let me = this;
+      let header = { Token: this.$store.state.token };
+      let configuracion = { headers: header };
+      axios
+        .get("categoria/list", configuracion)
+        .then(function (response) {
+          me.categorias = response.data;
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+    },
+  },
+};
+</script>
+
+<style>
+</style>
