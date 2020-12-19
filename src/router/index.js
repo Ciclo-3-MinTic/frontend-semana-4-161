@@ -30,13 +30,13 @@ const routes = [{
         
         path: 'adminArticulo',
         name: 'adminArticulo',
-        component: () => import('@/components/Articulo')
+        component: () => import('@/views/Articulo')
       },
       {
         
         path: 'adminCategoria',
         name: 'adminCategoria',
-        component: () => import('@/components/Categoria')
+        component: () => import('@/views/Categoria')
       },
 
     ],

@@ -2,14 +2,14 @@
     <v-layout align-start>
         <v-flex>
             <v-toolbar text color="white">
-                <v-toolbar-title>Articulos</v-toolbar-title>
+                <v-toolbar-title>Categorías</v-toolbar-title>
                 <v-divider
                 class="mx-2"
                 inset
                 vertical
                 ></v-divider>
                 <v-spacer></v-spacer>
-                <v-text-field class="text-xs-center" v-model="search" append-icon="search" 
+                <v-text-field class="text-xs-center" v-model="search" append-icon="mdi-card-search" 
                 label="Búsqueda" single-line hide-details></v-text-field>
                 <v-spacer></v-spacer>
                 <v-dialog v-model="dialog" max-width="500px">
@@ -23,31 +23,11 @@
                         <v-card-text>
                         <v-container grid-list-md>
                             <v-layout wrap>
-                                <v-flex xs12 sm6 md6>
-                                    <v-text-field v-model="codigo" label="Código">                                        
-                                    </v-text-field>
-                                </v-flex>
-                                <v-flex xs12 sm6 md6>
-                                    <v-select v-model="categoria"
-                                        :items="categorias"
-                                        label="Categoría">
-                                    </v-select>
+                                <v-flex xs12 sm12 md12>
+                                    <v-text-field v-model="nombre" label="Nombre"></v-text-field>
                                 </v-flex>
                                 <v-flex xs12 sm12 md12>
-                                    <v-text-field v-model="nombre" label="Nombre">                                        
-                                    </v-text-field>
-                                </v-flex>
-                                <v-flex xs12 sm6 md6>
-                                    <v-text-field type="number" v-model="stock" label="Stock">                                        
-                                    </v-text-field>
-                                </v-flex>
-                                <v-flex xs12 sm6 md6>
-                                    <v-text-field v-model="precio_venta" label="precio_venta">                                        
-                                    </v-text-field>
-                                </v-flex>
-                                <v-flex xs12 sm12 md12>
-                                    <v-text-field v-model="descripcion" label="Descripción">                                        
-                                    </v-text-field>
+                                    <v-text-field v-model="descripcion" label="Descripción"></v-text-field>
                                 </v-flex>
                                 <v-flex xs12 sm12 md12 v-show="valida">
                                     <div class="red--text" v-for="v in validaMensaje" :key="v" v-text="v">
@@ -93,7 +73,7 @@
             </v-toolbar>
             <v-data-table
                 :headers="headers"
-                :items="articulos"
+                :items="categorias"
                 :search="search"
                 class="elevation-1"
             >
@@ -141,25 +121,16 @@
             return{
                 dialog: false,
                 search:'',
-                articulos:[],
+                categorias:[],
                 headers: [
                     { text: 'Opciones', value: 'opciones', sortable: false },
-                    { text: 'Código',value: 'codigo', sortable: false},
-                    { text: 'Nombre',value: 'nombre', sortable: true},
-                    { text: 'Categoría',value: 'categoria.nombre', sortable: true},
-                    { text: 'Stock',value: 'stock', sortable: false},
-                    { text: 'Precio Venta',value: 'precio_venta', sortable: false},
-                    { text: 'Descripción', value: 'descripcion', sortable: false },              
-                    { text: 'Estado', value: 'estado', sortable: false }
+                    { text: 'Nombre', value: 'nombre', sortable: true },
+                    { text: 'Descripción', value: 'descripcion', sortable: false },
+                    { text: 'Estado', value: 'estado', sortable: false },
                 ],
-                id:'',
                 editedIndex: -1,
-                categoria:'',
-                categorias:[],
-                codigo: '',
+                id:'',
                 nombre:'',
-                stock:0,
-                precio_venta:0,
                 descripcion:'',
                 valida:0,
                 validaMensaje:[],
@@ -180,30 +151,15 @@
             }
         },
         created () {
-            this.listar();
-             this.selectCategoria();
+            this.listar()
         },
         methods: {
             listar(){
                 let me=this;
                 let header={"Token" : this.$store.state.token};
                 let configuracion= {headers : header};            
-                axios.get('articulo/list',configuracion).then(function (response){
-                    me.articulos=response.data;
-                }).catch(function(error){
-                    console.log(error);
-                });
-            },
-            selectCategoria(){
-                let me=this;
-                let categoriaArray=[];
-                let header={"Token" : this.$store.state.token};
-                let configuracion= {headers : header};            
                 axios.get('categoria/list',configuracion).then(function (response){
-                    categoriaArray=response.data;
-                    categoriaArray.map(function(x){
-                        me.categorias.push({text:x.nombre, value:x.id});
-                    });
+                    me.categorias=response.data;
                 }).catch(function(error){
                     console.log(error);
                 });
@@ -211,9 +167,6 @@
             limpiar(){
                 this.id='';
                 this.nombre='';
-                this.codigo='';
-                this.stock=0;
-                this.precio_venta=0;
                 this.descripcion='';
                 this.valida=0;
                 this.validaMensaje=[];
@@ -222,23 +175,11 @@
             validar(){
                 this.valida=0;
                 this.validaMensaje=[];
-                if (!this.categoria){
-                    this.validaMensaje.push('Seleccione una categoría');
-                }
-                if (this.codigo.length>64){
-                    this.validaMensaje.push('El código no debe tener más de 64 caracteres');
-                }
                 if(this.nombre.length<1 || this.nombre.length>50){
-                    this.validaMensaje.push('El nombre del artículo debe tener entre 1-50 caracteres.');
+                    this.validaMensaje.push('El nombre de la categoría debe tener entre 1-50 caracteres.');
                 }
                 if(this.descripcion.length>255){
-                    this.validaMensaje.push('La descripción del artículo no debe tener más de 255 caracteres.');
-                }
-                if (this.stock<0){
-                    this.validaMensaje.push('Ingrese un stock valido');
-                }
-                if (this.precio_venta<0){
-                    this.validaMensaje.push('Ingrese un precio de venta valido');
+                    this.validaMensaje.push('La descripción de la categoría no debe tener más de 255 caracteres.');
                 }
                 if (this.validaMensaje.length){
                     this.valida=1;
@@ -253,16 +194,8 @@
                     return;
                 }
                 if (this.editedIndex >-1){
-                    axios.put('articulo/update',
-                    {
-                        'id':this.id,
-                        'categoriaId':this.categoria,
-                        'codigo':this.codigo,
-                        'nombre':this.nombre,
-                        'stock':this.stock,
-                        'precio_venta':this.precio_venta,
-                        'descripcion':this.descripcion
-                    },configuracion)
+                    //Código para editar
+                    axios.put('categoria/update',{'id':this.id,'nombre':this.nombre,'descripcion':this.descripcion},configuracion)
                     .then(function(response){
                         me.limpiar();
                         me.close();
@@ -273,15 +206,7 @@
                     });
                 }else{
                     //Código para guardar
-                    axios.post('articulo/add',
-                    {
-                        'categoriaId':this.categoria,
-                        'codigo':this.codigo,
-                        'nombre':this.nombre,
-                        'stock':this.stock,
-                        'precio_venta':this.precio_venta,
-                        'descripcion':this.descripcion
-                    },configuracion)
+                    axios.post('categoria/add',{'nombre':this.nombre,'descripcion':this.descripcion},configuracion)
                     .then(function(response){
                         me.limpiar();
                         me.close();
@@ -293,12 +218,8 @@
                 }
             },
             editItem (item) {
-                 this.id=item.id;
-                this.categoria=item.categoria.id;
-                this.codigo=item.codigo;
+                this.id=item.id;
                 this.nombre=item.nombre;
-                this.stock=item.stock;
-                this.precio_venta=item.precio_venta;
                 this.descripcion=item.descripcion;
                 this.dialog = true;
                 this.editedIndex=1;
@@ -323,7 +244,7 @@
                 let header={"Token" : this.$store.state.token};
                 let configuracion= {headers : header};
             
-                axios.put('articulo/activate',{'id':this.adId},configuracion)
+                axios.put('categoria/activate',{'id':this.adId},configuracion)
                     .then(function(response){
                         me.adModal=0;
                         me.adAccion=0;
@@ -339,7 +260,7 @@
                 let me=this;
                 let header={"Token" : this.$store.state.token};
                 let configuracion= {headers : header};
-                axios.put('articulo/deactivate',{'id':this.adId},configuracion)
+                axios.put('categoria/deactivate',{'id':this.adId},configuracion)
                     .then(function(response){
                         me.adModal=0;
                         me.adAccion=0;
