@@ -32,12 +32,6 @@ const routes = [{
         name: 'adminArticulo',
         component: () => import('@/views/Articulo')
       },
-      {
-        
-        path: 'adminCategoria',
-        name: 'adminCategoria',
-        component: () => import('@/views/Categoria')
-      },
 
     ],
     meta: {

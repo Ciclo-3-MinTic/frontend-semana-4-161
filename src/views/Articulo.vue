@@ -1,10 +1,67 @@
 <template>
-  <v-layout align-start>
+  <v-layout align-start d-block flex-column block>
+    <v-dialog v-model="dialog">
+      <v-card>
+        <v-card-title>
+          <span class="headline">{{ title }}</span>
+        </v-card-title>
+        <v-card-text>
+          <v-container grid-list-md>
+            <v-layout wrap>
+              <v-flex xs12 sm6 md6>
+                <v-text-field v-model="codigo" label="Código"> </v-text-field>
+              </v-flex>
+              <v-flex xs12 sm6 md6>
+                <v-select
+                  v-model="categoria"
+                  :items="categorias"
+                  label="Categoría"
+                >
+                </v-select>
+              </v-flex>
+              <v-flex xs12 sm12 md12>
+                <v-text-field v-model="nombre" label="Nombre"> </v-text-field>
+              </v-flex>
+              <v-flex xs12 sm6 md6>
+                <v-text-field type="number" v-model="stock" label="Stock">
+                </v-text-field>
+              </v-flex>
+              <v-flex xs12 sm6 md6>
+                <v-text-field v-model="precio_venta" label="precio_venta">
+                </v-text-field>
+              </v-flex>
+              <v-flex xs12 sm12 md12>
+                <v-text-field v-model="descripcion" label="Descripción">
+                </v-text-field>
+              </v-flex>
+              <v-flex xs12 sm12 md12 v-show="valida">
+                <div
+                  class="red--text"
+                  v-for="v in validaMensaje"
+                  :key="v"
+                  v-text="v"
+                ></div>
+              </v-flex>
+            </v-layout>
+          </v-container>
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn color="blue darken-1">Cancelar</v-btn>
+          <v-btn color="blue darken-1">Guardar</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+
     <data-table-base
-      :title="title"
-      :dialog="dialog"
+      :title="titles"
       :articulos="articulos"
       :headers="headers"
+      @reroll="reroll"
+      @add="add"
+      @edit="edit"
+      @desactive="desactive"
+      @active="active"
     >
     </data-table-base>
   </v-layout>
@@ -18,9 +75,9 @@ export default {
   },
   data() {
     return {
-      title: "articulos",
       dialog: false,
-      search: "",
+      title: "articulo",
+      titles: "articulos",
       articulos: [
         {
           codigo: "1",
@@ -63,46 +120,48 @@ export default {
           opciones: 3,
         },
         {
-          codigo: "5",
-          nombre: "e",
-          categoria_nombre: "ee",
-          stock: 10,
-          precio_venta: 25000,
+          codigo: "4",
+          nombre: "d",
+          categoria_nombre: "dd",
+          stock: 0,
+          precio_venta: 100,
           descripcion: "loren loren loren",
           estado: 1,
-          opciones: true,
-        },
-        {
-          codigo: "5",
-          nombre: "e",
-          categoria_nombre: "ee",
-          stock: 10,
-          precio_venta: 25000,
-          descripcion: "loren loren loren",
-          estado: 1,
-          opciones: true,
-        },
-        {
-          codigo: "5",
-          nombre: "e",
-          categoria_nombre: "ee",
-          stock: 10,
-          precio_venta: 25000,
-          descripcion: "loren loren loren",
-          estado: 1,
-          opciones: true,
+          opciones: 3,
         },
       ],
       headers: [
-        { text: "Código", value: "codigo", sortable: true },
-        { text: "Nombre", value: "nombre", sortable: true },
-        { text: "Categoría", value: "categoria.nombre", sortable: true },
-        { text: "Stock", value: "stock", sortable: true },
-        { text: "Precio Venta", value: "precio_venta", sortable: true },
-        { text: "Descripción", value: "descripcion", sortable: false },
-        { text: "Estado", value: "estado", sortable: true },
-        { text: "Opciones", value: "opciones", sortable: false },
+        { text: "Código", value: "codigo", sortable: true, align: "center" },
+        { text: "Nombre", value: "nombre", sortable: true, align: "center" },
+        {
+          text: "Categoría",
+          value: "categoria.nombre",
+          sortable: true,
+          align: "center",
+        },
+        { text: "Stock", value: "stock", sortable: true, align: "center" },
+        {
+          text: "Precio Venta",
+          value: "precio_venta",
+          sortable: true,
+          align: "end",
+        },
+        {
+          text: "Descripción",
+          value: "descripcion",
+          sortable: false,
+          align: "center",
+        },
+        { text: "Estado", value: "estado", sortable: true, align: "center" },
+        {
+          text: "Opciones",
+          value: "opciones",
+          sortable: false,
+          align: "center",
+        },
       ],
+      item: {},
+
       id: "",
       editedIndex: -1,
       categoria: "",
@@ -122,155 +181,38 @@ export default {
   },
   computed: {
     formTitle() {
-      return this.editedIndex === -1 ? "Nuevo registro" : "Editar registro";
+      /* return this.editedIndex === -1 ? "Nuevo registro" : "Editar registro"; */
     },
   },
   watch: {
     dialog(val) {
-      val || this.close();
+      /* val || this.close(); */
     },
   },
   created() {
-    this.listar();
-    this.selectCategoria();
+    /* this.listar();
+    this.selectCategoria(); */
   },
   methods: {
-    listar() {
-      let me = this;
-      let header = { Token: this.$store.state.token };
-      let configuracion = { headers: header };
-      axios
-        .get("articulo/list", configuracion)
-        .then(function (response) {
-          me.articulos = response.data;
-        })
-        .catch(function (error) {
-          console.log(error);
-        });
-    },
-    selectCategoria() {
-      let me = this;
-      let categoriaArray = [];
-      let header = { Token: this.$store.state.token };
-      let configuracion = { headers: header };
-      axios
-        .get("categoria/list", configuracion)
-        .then(function (response) {
-          categoriaArray = response.data;
-          categoriaArray.map(function (x) {
-            me.categorias.push({ text: x.nombre, value: x.id });
-          });
-        })
-        .catch(function (error) {
-          console.log(error);
-        });
-    },
-    limpiar() {
-      this.id = "";
-      this.nombre = "";
-      this.codigo = "";
-      this.stock = 0;
-      this.precio_venta = 0;
-      this.descripcion = "";
-      this.valida = 0;
-      this.validaMensaje = [];
-      this.editedIndex = -1;
-    },
-    validar() {
-      this.valida = 0;
-      this.validaMensaje = [];
-      if (!this.categoria) {
-        this.validaMensaje.push("Seleccione una categoría");
-      }
-      if (this.codigo.length > 64) {
-        this.validaMensaje.push("El código no debe tener más de 64 caracteres");
-      }
-      if (this.nombre.length < 1 || this.nombre.length > 50) {
-        this.validaMensaje.push(
-          "El nombre del artículo debe tener entre 1-50 caracteres."
-        );
-      }
-      if (this.descripcion.length > 255) {
-        this.validaMensaje.push(
-          "La descripción del artículo no debe tener más de 255 caracteres."
-        );
-      }
-      if (this.stock < 0) {
-        this.validaMensaje.push("Ingrese un stock valido");
-      }
-      if (this.precio_venta < 0) {
-        this.validaMensaje.push("Ingrese un precio de venta valido");
-      }
-      if (this.validaMensaje.length) {
-        this.valida = 1;
-      }
-      return this.valida;
-    },
-    guardar() {
-      let me = this;
-      let header = { Token: this.$store.state.token };
-      let configuracion = { headers: header };
-      if (this.validar()) {
-        return;
-      }
-      if (this.editedIndex > -1) {
-        axios
-          .put(
-            "articulo/update",
-            {
-              id: this.id,
-              categoriaId: this.categoria,
-              codigo: this.codigo,
-              nombre: this.nombre,
-              stock: this.stock,
-              precio_venta: this.precio_venta,
-              descripcion: this.descripcion,
-            },
-            configuracion
-          )
-          .then(function (response) {
-            me.limpiar();
-            me.close();
-            me.listar();
-          })
-          .catch(function (error) {
-            console.log(error);
-          });
-      } else {
-        //Código para guardar
-        axios
-          .post(
-            "articulo/add",
-            {
-              categoriaId: this.categoria,
-              codigo: this.codigo,
-              nombre: this.nombre,
-              stock: this.stock,
-              precio_venta: this.precio_venta,
-              descripcion: this.descripcion,
-            },
-            configuracion
-          )
-          .then(function (response) {
-            me.limpiar();
-            me.close();
-            me.listar();
-          })
-          .catch(function (error) {
-            console.log(error);
-          });
-      }
-    },
     editItem(item) {
-      this.id = item.id;
-      this.categoria = item.categoria.id;
+      
+     /*  this.categoria = item.categoria.id; */
       this.codigo = item.codigo;
       this.nombre = item.nombre;
       this.stock = item.stock;
       this.precio_venta = item.precio_venta;
       this.descripcion = item.descripcion;
-      this.dialog = true;
       this.editedIndex = 1;
+    },
+    clearItem() {
+      
+     /*  this.categoria = item.categoria.id; */
+      this.codigo = "";
+      this.nombre = "";
+      this.stock = "";
+      this.precio_venta = "";
+      this.descripcion = "";
+      this.editedIndex = "";
     },
     activarDesactivarMostrar(accion, item) {
       this.adModal = 1;
@@ -287,46 +229,31 @@ export default {
     activarDesactivarCerrar() {
       this.adModal = 0;
     },
-    activar() {
-      let me = this;
-      let header = { Token: this.$store.state.token };
-      let configuracion = { headers: header };
 
-      axios
-        .put("articulo/activate", { id: this.adId }, configuracion)
-        .then(function (response) {
-          me.adModal = 0;
-          me.adAccion = 0;
-          me.adNombre = "";
-          me.adId = "";
-          me.listar();
-        })
-        .catch(function (error) {
-          console.log(error);
-        });
-    },
-    desactivar() {
-      let me = this;
-      let header = { Token: this.$store.state.token };
-      let configuracion = { headers: header };
-      axios
-        .put("articulo/deactivate", { id: this.adId }, configuracion)
-        .then(function (response) {
-          me.adModal = 0;
-          me.adAccion = 0;
-          me.adNombre = "";
-          me.adId = "";
-          me.listar();
-        })
-        .catch(function (error) {
-          console.log(error);
-        });
-    },
-    close() {
+    closeInfo() {
       this.dialog = false;
     },
-     impri() {
-      console.log('accion');
+    openInfo(){
+      this.dialog = true;
+    },
+
+    reroll() {
+      console.log("reroll");
+    },
+    add() {
+      this.clearItem();
+      this.openInfo();
+    },
+    edit(item) {
+      console.log(item);
+      this.editItem(item);
+      this.openInfo();
+    },
+    desactive(item) {
+      console.log("desactive");
+    },
+    active(item) {
+      console.log("active");
     },
   },
 };

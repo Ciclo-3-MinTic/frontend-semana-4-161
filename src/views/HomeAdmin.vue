@@ -42,7 +42,7 @@
                     <v-col cols="6">
                       <v-btn-toggle v-model="$vuetify.theme.dark" rounded small>
                         <v-btn small>
-                          <v-icon>mdi-brightness-5</v-icon>
+                          <v-icon>mdi-brightness-7</v-icon>
                         </v-btn>
 
                         <v-btn small>
@@ -66,7 +66,7 @@
                 </v-list-item-action>
                 <v-list-item-title> Articulos </v-list-item-title>
               </v-list-item>
-              <v-list-item :to="{ name: 'adminCategoria' }">
+              <v-list-item :to="{ name: 'adminArticulo' }">
                 <v-list-item-action>
                   <v-icon>mdi-folder-table</v-icon>
                 </v-list-item-action>
