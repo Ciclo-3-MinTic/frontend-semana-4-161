@@ -68,7 +68,7 @@
 </template>
 <script>
 import axios from "axios";
-import DataTableBase from "../components/DataTableBase.vue";
+import DataTableBase from "@/components/DataTableBase.vue";
 export default {
   components: {
     DataTableBase,

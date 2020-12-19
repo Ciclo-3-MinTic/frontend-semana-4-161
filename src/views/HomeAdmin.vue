@@ -54,19 +54,19 @@
                 </v-card-text>
               </v-card>
 
-              <v-list-item :to="{ name: '' }">
+              <v-list-item :to="{ name: 'Login' }">
                 <v-list-item-action>
                   <v-icon>mdi-table-account</v-icon>
                 </v-list-item-action>
                 <v-list-item-title> Usuarios </v-list-item-title>
               </v-list-item>
-              <v-list-item :to="{ name: 'adminArticulo' }">
+              <v-list-item :to="{ name: 'Articulos' }">
                 <v-list-item-action>
                   <v-icon>mdi-file-table-box-multiple</v-icon>
                 </v-list-item-action>
                 <v-list-item-title> Articulos </v-list-item-title>
               </v-list-item>
-              <v-list-item :to="{ name: 'adminArticulo' }">
+              <v-list-item :to="{ name: 'Categotias' }">
                 <v-list-item-action>
                   <v-icon>mdi-folder-table</v-icon>
                 </v-list-item-action>

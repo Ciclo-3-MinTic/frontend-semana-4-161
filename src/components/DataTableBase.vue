@@ -9,12 +9,13 @@
       <v-text-field 
         class="text-xs-center"
         v-model="buscar"
-        append-icon="mdi-search"
+        append-icon="mdi-magnify"
         label="Búsqueda"
         single-line
         hide-details
         
       ></v-text-field>
+      
       <v-spacer></v-spacer>
 
       <v-btn color="primary" fab small  class="elevation-0"  @click="$emit('add')"><v-icon>mdi-plus</v-icon></v-btn>

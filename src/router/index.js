@@ -22,15 +22,21 @@ const routes = [{
       },
       {
         
-        path: 'adminLoginAdmin',
-        name: 'adminLoginAdmin',
+        path: 'login',
+        name: 'Login',
         component: () => import('@/views/LoginAdmin')
       },
       {
         
-        path: 'adminArticulo',
-        name: 'adminArticulo',
-        component: () => import('@/views/Articulo')
+        path: 'articulos',
+        name: 'Articulos',
+        component: () => import('@/views/admin/Articulo')
+      },
+      {
+
+        path: 'categotia',
+        name: 'Categotias',
+        component: () => import('@/views/admin/Categoria')
       },
 
     ],
