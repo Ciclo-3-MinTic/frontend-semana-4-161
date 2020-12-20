@@ -93,6 +93,7 @@
       :title="titles"
       :data="dataUsers"
       :headers="headers"
+      :isloading="isloading"
       @reroll="reroll"
       @add="add"
       @edit="edit"
@@ -116,6 +117,7 @@ export default {
       dialogpass: false,
       dialogAlert: false,
       typeDialog: 0, //add=0, edit=1;
+      isloading: false,
       title: "Usuario",
       titles: "Usuarios",
       dataUsers: [],
@@ -176,16 +178,7 @@ export default {
       tipo_documento: "",
     };
   },
-  computed: {
-    formTitle() {
-      /* return this.editedIndex === -1 ? "Nuevo registro" : "Editar registro"; */
-    },
-  },
-  watch: {
-    dialog(val) {
-      /* val || this.close(); */
-    },
-  },
+
   created() {
     this.listar();
 
@@ -214,6 +207,8 @@ export default {
     },
     ///----inicio metodos de data table base
     reroll() {
+      this.isloading = true;
+
       this.listar();
     },
     add() {
@@ -227,13 +222,14 @@ export default {
       this.openDialog();
     },
     desactive(item) {
+      this.isloading = true;
       this.deactivateUsuario(item);
     },
     active(item) {
+      this.isloading = true;
       this.activateUsuario(item);
     },
     //----fin metodos data table base
-
 
     //-- inicio dialogos
     openDialog() {
@@ -254,14 +250,14 @@ export default {
     },
     openDialogResponse(type, mensaje) {
       this.reroll();
+
       this.closeDialog();
       this.closeDialogPass();
+      this.isloading = false;
       console.log(mensaje);
     },
     //-- fin dialogos
 
-
-  
     //---inicio validaciones
     validar() {
       this.valida = 0;
@@ -369,8 +365,10 @@ export default {
         .get("usuario/list", this.headerToken())
         .then(function (response) {
           me.dataUsers = response.data;
+          me.isloading = false;
         })
         .catch(function (error) {
+          me.isloading = false;
           console.log(error);
         });
     },
