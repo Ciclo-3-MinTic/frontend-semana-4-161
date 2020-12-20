@@ -117,7 +117,7 @@ export default {
       dialogpass: false,
       dialogAlert: false,
       typeDialog: 0, //add=0, edit=1;
-      isloading: false,
+      isloading: true,
       title: "Usuario",
       titles: "Usuarios",
       dataUsers: [],

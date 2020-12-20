@@ -34,6 +34,7 @@
       :headers="headers"
       :items="data"
       :search="buscar"
+      :loading="isloading"
       class="elevation-1"
     >
       <template v-slot:[`item.opciones`]="{ item }">
