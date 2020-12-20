@@ -79,7 +79,7 @@ const router = new VueRouter({
 router.beforeEach((to, from, next) => {
   
   if (to.meta.admin) {
-    if (store.state.usuario || to.name === 'LoginAdmin') {
+    if (store.state.usuario || to.name == 'LoginAdmin') {
       next();
     } else {
       next({

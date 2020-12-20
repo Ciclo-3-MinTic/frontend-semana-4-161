@@ -182,7 +182,6 @@ export default {
   created() {
     this.listar();
 
-    /* this.selectCategoria(); */
   },
   methods: {
     editItem(item) {
@@ -294,11 +293,6 @@ export default {
     },
     //-- fin validaciones
 
-    headerToken() {
-      let header = { Token: this.$store.state.token };
-      return { headers: header };
-    },
-
     dialogAcepter() {
       if (this.validar) {
         if (this.typeDialog) {
@@ -359,6 +353,11 @@ export default {
     },
 
     //--- accions hacia la api--
+    headerToken() {
+      let header = { Token: this.$store.state.token };
+      return { headers: header };
+    },
+
     listar() {
       let me = this;
       axios

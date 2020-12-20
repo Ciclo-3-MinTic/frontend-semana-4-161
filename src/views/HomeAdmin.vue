@@ -1,16 +1,10 @@
 <template>
   <div>
-    
     <v-app id="inspire">
       <v-app id="sandbox">
-        <v-navigation-drawer
-          v-model="primaryDrawer.model"
-          :clipped="true"
-          app
-         
-        >
+        <v-navigation-drawer v-model="primaryDrawer.model" :clipped="true" app>
           <v-list dense class="py-0">
-            <template> 
+            <template>
               <v-card align="center ">
                 <v-card-text class="pb-0 pt-7">
                   <v-row align="center" justify="space-around">
@@ -23,10 +17,14 @@
                       <v-list-item>
                         <v-list-item-content class="text-right">
                           <v-list-item-title class="title">
-                            rol
+                            {{nombre}}
                           </v-list-item-title>
-                          <v-list-item-subtitle>Name</v-list-item-subtitle>
-                          <v-list-item-subtitle>Email</v-list-item-subtitle>
+                          <v-list-item-subtitle>{{
+                            rol
+                          }}</v-list-item-subtitle>
+                          <v-list-item-subtitle>{{
+                            email
+                          }}</v-list-item-subtitle>
                         </v-list-item-content>
                       </v-list-item>
                     </v-col>
@@ -72,8 +70,6 @@
                 </v-list-item-action>
                 <v-list-item-title> Categorias </v-list-item-title>
               </v-list-item>
-           
-              
             </template>
           </v-list>
         </v-navigation-drawer>
@@ -86,16 +82,14 @@
         </v-app-bar>
 
         <v-main col="12">
-        
-            <v-container  col="12"
-              ><!-- <v-row align="center" justify="center">
+          <v-container col="12"
+            ><!-- <v-row align="center" justify="center">
               <v-col cols="10"> </v-col>
             </v-row> -->
-              <v-slide-y-transition >
-                <router-view/>
-              </v-slide-y-transition>
-            </v-container>
-          
+            <v-slide-y-transition>
+              <router-view />
+            </v-slide-y-transition>
+          </v-container>
         </v-main>
 
         <v-footer app>
@@ -113,23 +107,22 @@ export default {
   data() {
     return {
       drawers: ["Default (no property)", "Permanent"],
+
       primaryDrawer: {
         model: null,
         type: "default (no property)",
       },
+
+      rol: "",
+      nombre: "",
+      email: "",
     };
   },
 
-  computed: {
-    logueado() {
-      /* return this.$store.state.usuario; */
-      return null;
-    },
-  },
+  
   methods: {
     salir() {
-      this.$store.dispatch("salirAdmin"); 
-      
+      this.$store.dispatch("salirAdmin");
     },
 
     ingresar() {
@@ -139,10 +132,19 @@ export default {
     home() {
       this.estado = 1;
     },
+
+    edituser(usuario){
+
+    }
   },
   created() {
-    /* this.$store.dispatch("autoLogin"); */
-  },
+    let user =this.$store.state.usuario;
+    
+    this.rol = user.rol,
+    this.nombre= user.nombre,
+    this.email=user.email
+    
+  }
 };
 </script>
 

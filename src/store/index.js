@@ -19,22 +19,30 @@ export default new Vuex.Store({
         }
     },
     actions: {
-        guardarToken({ commit }, token) {
+        guardarToken({
+            commit
+        }, token) {
             commit("setToken", token)
             commit("setUsuario", decode(token))
             localStorage.setItem("token", token)
         },
-        autoLogin({ commit }) {
+        autoLogin({
+            commit
+        }) {
             console.log("autologin");
             let token = localStorage.getItem("token");
             if (token) {
                 commit("setToken", token);
                 commit("setUsuario", decode(token));
             }
-            router.push({ name: 'home' }).catch(() => {});
+            router.push({
+                name: 'HomeAdmin'
+            }).catch(() => {});
 
         },
-        salirAdmin({ commit }) {
+        salirAdmin({
+            commit
+        }) {
             commit("setToken", null);
             commit("setUsuario", null);
             localStorage.removeItem("token");
