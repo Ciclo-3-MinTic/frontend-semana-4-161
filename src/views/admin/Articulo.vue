@@ -55,7 +55,7 @@
 
     <data-table-base
       :title="titles"
-      :articulos="articulos"
+      :data="articulos"
       :headers="headers"
       @reroll="reroll"
       @add="add"
@@ -160,7 +160,7 @@ export default {
           align: "center",
         },
       ],
-      item: {},
+      
 
       id: "",
       editedIndex: -1,

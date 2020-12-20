@@ -23,7 +23,7 @@
     <v-data-table
       
       :headers="headers"
-      :items="articulos"
+      :items="data"
       :search="buscar"
       class="elevation-1"
     >
@@ -55,7 +55,7 @@
 export default {
   props: {
     title: String,
-    articulos: Array,
+    data: Array,
     headers: Array,
     buscar: String,
   },
@@ -65,11 +65,6 @@ export default {
     };
   },
 
-  methods:{
-    print(x){
-      console.log(x);
-    }
-  }
 };
 </script>
 

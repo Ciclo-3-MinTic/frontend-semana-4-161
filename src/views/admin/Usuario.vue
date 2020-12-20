@@ -8,54 +8,90 @@
         <v-card-text>
           <v-container grid-list-md>
             <v-layout wrap>
-              <v-flex xs12 sm6 md6>
-                <v-text-field v-model="codigo" label="Código"> </v-text-field>
+              <v-flex xs4 sm3 md2>
+                <v-select v-model="rol" :items="roles" label="Rol"> </v-select>
               </v-flex>
-              <v-flex xs12 sm6 md6>
+              <v-flex xs8 sm4 md5>
+                <v-text-field v-model="nombre" label="Nombre"> </v-text-field>
+              </v-flex>
+              <v-flex xs12 sm5 md5>
+                <v-text-field type="email" v-model="email" label="email">
+                </v-text-field>
+              </v-flex>
+              <v-flex xs5 sm4 md3>
                 <v-select
-                  v-model="categoria"
-                  :items="categorias"
-                  label="Categoría"
+                  v-model="tipo_documento"
+                  :items="tipo_documentos"
+                  label="tipo de num_documento"
                 >
                 </v-select>
               </v-flex>
-              <v-flex xs12 sm12 md12>
-                <v-text-field v-model="nombre" label="Nombre"> </v-text-field>
+              <v-flex xs7 sm8 md9>
+                <v-text-field
+                  v-model="num_documento"
+                  label="num_documento"
+                  type="number"
+                >
+                </v-text-field>
+              </v-flex>
+
+              <v-flex xs12 sm6 md6>
+                <v-text-field type="number" v-model="telefono" label="telefono">
+                </v-text-field>
               </v-flex>
               <v-flex xs12 sm6 md6>
-                <v-text-field type="number" v-model="stock" label="Stock">
+                <v-text-field
+                  v-model="direccion"
+                  label="direccion"
+                  type="direccion"
+                >
                 </v-text-field>
-              </v-flex>
-              <v-flex xs12 sm6 md6>
-                <v-text-field v-model="precio_venta" label="precio_venta">
-                </v-text-field>
-              </v-flex>
-              <v-flex xs12 sm12 md12>
-                <v-text-field v-model="descripcion" label="Descripción">
-                </v-text-field>
-              </v-flex>
-              <v-flex xs12 sm12 md12 v-show="valida">
-                <div
-                  class="red--text"
-                  v-for="v in validaMensaje"
-                  :key="v"
-                  v-text="v"
-                ></div>
               </v-flex>
             </v-layout>
           </v-container>
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn color="blue darken-1">Cancelar</v-btn>
-          <v-btn color="blue darken-1">Guardar</v-btn>
+          <v-btn color="blue darken-1" @click="dialog = false">Cancelar</v-btn>
+          <v-btn color="blue darken-1" @click="dialogAcepter">Guardar</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+
+    <v-dialog v-model="dialogpass">
+      <v-card>
+        <v-card-title>
+          <span class="headline">{{ title }}</span>
+        </v-card-title>
+        <v-card-text>
+          <v-container grid-list-md>
+            <v-layout wrap>
+              <v-flex xs12 sm6 md6>
+                <v-text-field
+                  type="password"
+                  v-model="password"
+                  label="password"
+                >
+                </v-text-field>
+              </v-flex>
+            </v-layout>
+          </v-container>
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn color="blue darken-1" @click="dialogpass = false"
+            >Cancelar</v-btn
+          >
+          <v-btn color="blue darken-1" @click="dialogPasswordAcepter"
+            >Guardar</v-btn
+          >
         </v-card-actions>
       </v-card>
     </v-dialog>
 
     <data-table-base
       :title="titles"
-      :articulos="articulos"
+      :data="dataUsers"
       :headers="headers"
       @reroll="reroll"
       @add="add"
@@ -77,9 +113,14 @@ export default {
   data() {
     return {
       dialog: false,
+      dialogpass: false,
+      dialogAlert: false,
+      typeDialog: 0, //add=0, edit=1;
       title: "Usuario",
       titles: "Usuarios",
-      articulos: [],
+      dataUsers: [],
+      roles: [],
+      tipo_documentos: [],
       headers: [
         { text: "Código", value: "id", sortable: true, align: "center" },
         { text: "Nombre", value: "nombre", sortable: true, align: "center" },
@@ -92,7 +133,7 @@ export default {
         { text: "Email", value: "email", sortable: true, align: "center" },
 
         {
-          text: "Identificacion",
+          text: "num_documento",
           value: "num_documento",
           sortable: false,
           align: "center",
@@ -122,6 +163,17 @@ export default {
           align: "center",
         },
       ],
+
+      valida: 0,
+      id: "",
+      nombre: "",
+      rol: "",
+      email: "",
+      num_documento: "",
+      direccion: "",
+      telefono: "",
+      password: "",
+      tipo_documento: "",
     };
   },
   computed: {
@@ -136,81 +188,242 @@ export default {
   },
   created() {
     this.listar();
+
     /* this.selectCategoria(); */
   },
   methods: {
     editItem(item) {
-      /*  this.categoria = item.categoria.id; */
-      this.codigo = item.codigo;
-      this.nombre = item.nombre;
-      this.stock = item.stock;
-      this.precio_venta = item.precio_venta;
-      this.descripcion = item.descripcion;
-      this.editedIndex = 1;
+      this.id = item.id;
+      (this.nombre = item.nombre),
+        (this.rol = item.rol),
+        (this.email = item.email),
+        (this.num_documento = item.num_documento),
+        (this.direccion = item.direccion),
+        (this.telefono = item.telefono),
+        (this.tipo_documento = item.tipo_documento);
     },
     clearItem() {
-      /*  this.categoria = item.categoria.id; */
-      this.codigo = "";
-      this.nombre = "";
-      this.stock = "";
-      this.precio_venta = "";
-      this.descripcion = "";
-      this.editedIndex = "";
+      this.id = "";
+      (this.nombre = ""),
+        (this.rol = ""),
+        (this.email = ""),
+        (this.num_documento = ""),
+        (this.direccion = ""),
+        (this.telefono = ""),
+        (this.tipo_documento = "");
     },
-    activarDesactivarMostrar(accion, item) {
-      this.adModal = 1;
-      this.adNombre = item.nombre;
-      this.adId = item.id;
-      if (accion == 1) {
-        this.adAccion = 1;
-      } else if (accion == 2) {
-        this.adAccion = 2;
-      } else {
-        this.adModal = 0;
-      }
-    },
-    activarDesactivarCerrar() {
-      this.adModal = 0;
-    },
-
-    closeInfo() {
-      this.dialog = false;
-    },
-    openInfo() {
-      this.dialog = true;
-    },
-
+    ///----inicio metodos de data table base
     reroll() {
-      console.log("reroll");
+      this.listar();
     },
     add() {
+      this.typeDialog = 0;
       this.clearItem();
-      this.openInfo();
+      this.openDialog();
     },
     edit(item) {
-      console.log(item);
+      this.typeDialog = 1;
       this.editItem(item);
-      this.openInfo();
+      this.openDialog();
     },
     desactive(item) {
-      console.log("desactive");
+      this.deactivateUsuario(item);
     },
     active(item) {
-      console.log("active");
+      this.activateUsuario(item);
     },
+    //----fin metodos data table base
+
+
+    //-- inicio dialogos
+    openDialog() {
+      this.dialog = true;
+    },
+    closeDialog() {
+      this.clearItem();
+      this.dialog = false;
+      this.typeDialog = 0;
+    },
+
+    openDialogPassword() {
+      this.dialogpass = true;
+    },
+    closeDialogPass() {
+      this.dialogpass = false;
+      this.password = "";
+    },
+    openDialogResponse(type, mensaje) {
+      this.reroll();
+      this.closeDialog();
+      this.closeDialogPass();
+      console.log(mensaje);
+    },
+    //-- fin dialogos
+
+
+  
+    //---inicio validaciones
+    validar() {
+      this.valida = 0;
+
+      if (!this.rol) {
+        //falta de rol
+      }
+      if (!this.tipo_documento) {
+        //falta de rol
+      }
+
+      if (this.nombre.length < 1 || this.nombre.length > 50) {
+        // nombre muy corto o muy largo
+      }
+      if (this.email.length < 1) {
+        // email muy corto
+      }
+      if (this.num_documento < 1) {
+        // num_documento muy corto
+      }
+      if (this.telefono < 1) {
+        // telefono muy corto
+      }
+      return this.valida;
+    },
+    validarPass() {
+      return this.password.length > 6;
+    },
+    isEmailUser(email) {
+      return this.dataUsers.find((user) => user.email === email);
+    },
+    isDocumentoUser(documento) {
+      return this.dataUsers.find((user) => user.num_documento === documento);
+    },
+    //-- fin validaciones
+
+    headerToken() {
+      let header = { Token: this.$store.state.token };
+      return { headers: header };
+    },
+
+    dialogAcepter() {
+      if (this.validar) {
+        if (this.typeDialog) {
+          this.openDialogPassword();
+        } else {
+          //add
+          if (this.isEmailUser(this.email)) {
+            this.openDialogResponse(0, "email ya usado");
+          } else if (this.isDocumentoUser(this.num_documento)) {
+            this.openDialogResponse(0, "numero documento ya usado");
+          } else {
+            this.openDialogPassword();
+          }
+        }
+      }
+    },
+    dialogPasswordAcepter() {
+      if (this.typeDialog) {
+        //edit
+        if (this.validarPass) {
+          this.updateUsuario({
+            id: this.id,
+            rol: this.rol,
+            nombre: this.nombre,
+            password: this.password,
+            tipo_documento: this.tipo_documento,
+            num_documento: this.num_documento,
+            direccion: this.direccion,
+            telefono: this.telefono,
+          });
+        } else {
+          this.updateUsuario({
+            id: this.id,
+            rol: this.rol,
+            nombre: this.nombre,
+            tipo_documento: this.tipo_documento,
+            num_documento: this.num_documento,
+            direccion: this.direccion,
+            telefono: this.telefono,
+          });
+        }
+      } else {
+        //add
+        if (this.validarPass) {
+          this.newUsuario({
+            rol: this.rol,
+            nombre: this.nombre,
+            password: this.password,
+            email: this.email,
+            tipo_documento: this.tipo_documento,
+            num_documento: this.num_documento,
+            direccion: this.direccion,
+            telefono: this.telefono,
+            estado: 0,
+          });
+        }
+      }
+    },
+
+    //--- accions hacia la api--
     listar() {
       let me = this;
-      let header = { Token: this.$store.state.token };
-      let configuracion = { headers: header };
       axios
-        .get("categoria/list", configuracion)
+        .get("usuario/list", this.headerToken())
         .then(function (response) {
-          me.categorias = response.data;
+          me.dataUsers = response.data;
         })
         .catch(function (error) {
           console.log(error);
         });
     },
+
+    newUsuario(usuario) {
+      let me = this;
+      axios
+        .post("usuario/add", usuario, this.headerToken())
+        .then(function (response) {
+          me.openDialogResponse(1, "nuevo usuario creado");
+        })
+        .catch(function (error) {
+          me.openDialogResponse(0, "no se puede crear usuaro");
+          console.log(error);
+        });
+    },
+    updateUsuario(usuario) {
+      let me = this;
+      axios
+        .put("usuario/update", usuario, this.headerToken())
+        .then(function (response) {
+          me.openDialogResponse(1, "usuario actualizado");
+        })
+        .catch(function (error) {
+          me.openDialogResponse(0, "no se puede actualizar usuaro");
+          console.log(error);
+        });
+    },
+
+    activateUsuario(usuario) {
+      let me = this;
+      axios
+        .put("usuario/activate", { id: usuario.id }, this.headerToken())
+        .then(function (response) {
+          me.openDialogResponse(1, "usuario activado");
+        })
+        .catch(function (error) {
+          me.openDialogResponse(0, "no se puede activar usuario");
+        });
+    },
+    deactivateUsuario(usuario) {
+      let me = this;
+      axios
+        .put("usuario/deactivate", { id: usuario.id }, this.headerToken())
+        .then(function (response) {
+          me.openDialogResponse(1, "usuario activado");
+        })
+        .catch(function (error) {
+          me.openDialogResponse(0, "no se puede activar usuario");
+        });
+    },
+
+    //--- fin accions hacia la api--
   },
 };
 </script>
