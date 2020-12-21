@@ -8,19 +8,50 @@
         <v-card-text>
           <v-container grid-list-md>
             <v-layout wrap>
-               <v-flex xs8 sm9 md10>
+              <v-flex xs12 sm4 md3>
+                <v-select
+                  v-model="categoria"
+                  :items="dataCategorias"
+                  label="tipo de articulos"
+                  :hint="`${categoria.id} : ${categoria.nombre}`"
+                  item-text='nombre'
+                  item-value="id"
+                  persistent-hint
+                  return-object
+                  single-line
+                  :loading="loadingCategorias"
+                >
+                </v-select>
+              </v-flex>
+              <v-flex xs8 sm6 md6>
                 <v-text-field v-model="nombre" label="Nombre"> </v-text-field>
               </v-flex>
-                <v-flex xs4 sm3 md2>
-                <v-text-field v-model="id" label="codigo" disabled v-show="typeDialog" type='text' > </v-text-field>
+              <v-flex xs4 sm2 md3>
+                <v-text-field v-model="codigo" label="codigo"> </v-text-field>
               </v-flex>
-           
-            
+
+              <v-flex xs8>
+                <v-text-field
+                  type="number"
+                  v-model="precio_venta"
+                  label="precio"
+                >
+                </v-text-field>
+              </v-flex>
+              <v-flex xs4>
+                <v-text-field type="number" v-model="stock" label="Stock">
+                </v-text-field>
+              </v-flex>
               <v-flex xs12>
-                <v-textarea  v-model="descripcion" outlined rows="3" auto-grow label="descripcion">
+                <v-textarea
+                  v-model="descripcion"
+                  outlined
+                  rows="3"
+                  auto-grow
+                  label="descripcion"
+                >
                 </v-textarea>
               </v-flex>
-             
             </v-layout>
           </v-container>
         </v-card-text>
@@ -31,7 +62,6 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
-
 
     <data-table-base
       :title="titles"
@@ -58,19 +88,24 @@ export default {
   data() {
     return {
       dialog: false,
-      dialogpass: false,
-      dialogAlert: false,
       typeDialog: 0, //add=0, edit=1;
       isloading: true,
+      loadingCategorias: true,
       title: "Articulo",
       titles: "Articulos",
       dataArticulos: [],
-      roles: [],
+      dataCategorias: [],
+      articulos: [],
       tipo_documentos: [],
       headers: [
         { text: "Código", value: "codigo", sortable: true, align: "center" },
         { text: "Nombre", value: "nombre", sortable: true, align: "center" },
-        { text: "articulo", value: "categoria.nombre", sortable: true, align: "center" },
+        {
+          text: "articulo",
+          value: "categoria.nombre",
+          sortable: true,
+          align: "center",
+        },
         {
           text: "Descripcion",
           value: "descripcion",
@@ -104,10 +139,17 @@ export default {
       ],
 
       valida: 0,
+
+      categoria: {},
+
       id: "",
+      categoriaId: "",
       nombre: "",
+      codigo: "",
+      precio_venta: "",
+      stock: "",
       descripcion: "",
-      estado: 0
+      estado: 0,
     };
   },
 
@@ -116,17 +158,26 @@ export default {
   },
   methods: {
     editItem(item) {
-      (this.id = item.id),
+      (this.categoria = item.categoria),
+        (this.id = item.id),
+        (this.categoriaId = item.categoriaId),
         (this.nombre = item.nombre),
+        (this.codigo = item.codigo),
+        (this.precio_venta = item.precio_venta),
+        (this.stock = item.stock),
         (this.descripcion = item.descripcion),
-        (this.estado = item.estado)
-       
+        (this.estado = item.estado);
     },
     clearItem() {
-       (this.id = ""),
+      (this.categoria = ""),
+        (this.id = ""),
+        (this.categoriaId = ""),
         (this.nombre = ""),
+        (this.codigo = ""),
+        (this.precio_venta = ""),
+        (this.stock = ""),
         (this.descripcion = ""),
-        (this.estado = "")
+        (this.estado = "");
     },
     ///----inicio metodos de data table base
     reroll() {
@@ -157,6 +208,8 @@ export default {
     //-- inicio dialogos
     openDialog() {
       this.dialog = true;
+      this.loadingCategorias=true;
+      this.listar_categorias();
     },
     closeDialog() {
       this.clearItem();
@@ -164,7 +217,6 @@ export default {
       this.typeDialog = 0;
     },
 
-   
     openDialogResponse(type, mensaje) {
       this.reroll();
 
@@ -178,38 +230,47 @@ export default {
     validar() {
       this.valida = 0;
 
-      
       if (this.nombre.length < 1 || this.nombre.length > 50) {
         // nombre muy corto o muy largo
       }
-     
+
       if (this.descripcion < 1) {
         // telefono muy corto
       }
       return this.valida;
     },
-   
+
     //-- fin validaciones
 
-    dialogAcepter() {
+    dialogAcepter() { 
+    console.log(this.categoria);
+
       if (this.validar) {
         if (this.typeDialog) {
           this.updateArticulo({
             id: this.id,
+            categoriaId: this.categoria.id,
             nombre: this.nombre,
-            descripcion: this.descripcion
-
-          })
+            codigo: this.codigo,
+            precio_venta: this.precio_venta,
+            stock: this.stock,
+            descripcion: this.descripcion,
+            estado: this.estado,
+          });
         } else {
           this.newArticulo({
-            
+            categoriaId: this.categoria.id,
             nombre: this.nombre,
-            descripcion: this.descripcion
-          })
+            codigo: this.codigo,
+            precio_venta: this.precio_venta,
+            stock: this.stock,
+            descripcion: this.descripcion,
+            estado: this.estado,
+          });
         }
       }
     },
-  
+
     //--- accions hacia la api--
     headerToken() {
       let header = { Token: this.$store.state.token };
@@ -226,6 +287,19 @@ export default {
         })
         .catch(function (error) {
           me.isloading = false;
+          console.log(error);
+        });
+    },
+    listar_categorias() {
+      let me = this;
+      axios
+        .get("categoria/list", this.headerToken())
+        .then(function (response) {
+          me.dataCategorias = response.data;
+          me.loadingCategorias = false;
+        })
+        .catch(function (error) {
+          me.loadingCategorias = false;
           console.log(error);
         });
     },
