@@ -1,6 +1,6 @@
 <template>
   <v-layout align-start d-block flex-column block>
-    <v-dialog v-model="dialog">
+    <v-dialog v-model="dialog" transition="slide-x-reverse-transition">
       <v-card>
         <v-card-title>
           <span class="headline">{{ title }}</span>
@@ -8,31 +8,74 @@
         <v-card-text>
           <v-container grid-list-md>
             <v-layout wrap>
-               <v-flex xs8 sm9 md10>
+              <v-flex xs8 sm9 md10>
                 <v-text-field v-model="nombre" label="Nombre"> </v-text-field>
               </v-flex>
-                <v-flex xs4 sm3 md2>
-                <v-text-field v-model="id" label="codigo" disabled v-show="typeDialog" type='text' > </v-text-field>
+              <v-flex xs4 sm3 md2>
+                <v-text-field
+                  v-model="id"
+                  label="codigo"
+                  disabled
+                  v-show="typeDialog"
+                  type="text"
+                >
+                </v-text-field>
               </v-flex>
-           
-            
+
               <v-flex xs12>
-                <v-textarea  v-model="descripcion" outlined rows="3" auto-grow label="descripcion">
+                <v-textarea
+                  v-model="descripcion"
+                  outlined
+                  rows="3"
+                  auto-grow
+                  label="descripcion"
+                >
                 </v-textarea>
               </v-flex>
-             
             </v-layout>
           </v-container>
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn color="blue darken-1" @click="dialog = false">Cancelar</v-btn>
-          <v-btn color="blue darken-1" @click="dialogAcepter">Guardar</v-btn>
+          <v-btn color="error" small @click="dialog = false">Cancelar</v-btn>
+          <v-btn color="primary" @click="dialogAcepter">Guardar</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
 
+    <v-snackbar
+      v-model="dialogAlert"
+      :timeout="timeout"
+      center
+      shaped
+      bottom
+      right
+     
+      transition="slide-y-reverse-transition"
+      :color="coloAlert"
+    >
+    <div
+      class=" text-center title  text "
+      
+      
+      
+    >
 
+      {{ textDialogAler }}
+    </div>
+
+      <template v-slot:action="{ attrs }">
+        <v-btn
+          small
+          icon
+          class="elevation-0"
+          v-bind="attrs"
+          @click="snackbar = dialogAlert"
+        >
+          <v-icon>mdi-close</v-icon>
+        </v-btn>
+      </template>
+    </v-snackbar>
     <data-table-base
       :title="titles"
       :data="dataCategorias"
@@ -59,7 +102,12 @@ export default {
     return {
       dialog: false,
       dialogpass: false,
+
       dialogAlert: false,
+      textDialogAler: "",
+      coloAlert: "",
+      timeout: 2000,
+
       typeDialog: 0, //add=0, edit=1;
       isloading: true,
       title: "Usuario",
@@ -94,7 +142,7 @@ export default {
       id: "",
       nombre: "",
       descripcion: "",
-      estado: 0
+      estado: 0,
     };
   },
 
@@ -106,14 +154,13 @@ export default {
       (this.id = item.id),
         (this.nombre = item.nombre),
         (this.descripcion = item.descripcion),
-        (this.estado = item.estado)
-       
+        (this.estado = item.estado);
     },
     clearItem() {
-       (this.id = ""),
+      (this.id = ""),
         (this.nombre = ""),
         (this.descripcion = ""),
-        (this.estado = "")
+        (this.estado = "");
     },
     ///----inicio metodos de data table base
     reroll() {
@@ -151,13 +198,13 @@ export default {
       this.typeDialog = 0;
     },
 
-   
     openDialogResponse(type, mensaje) {
       this.reroll();
-
+      this.textDialogAler = mensaje;
       this.closeDialog();
+      this.coloAlert = type > 0 ? "accent" : "error";
       this.isloading = false;
-      console.log(mensaje);
+      this.dialogAlert = true;
     },
     //-- fin dialogos
 
@@ -165,17 +212,16 @@ export default {
     validar() {
       this.valida = 0;
 
-      
       if (this.nombre.length < 1 || this.nombre.length > 50) {
         // nombre muy corto o muy largo
       }
-     
+
       if (this.descripcion < 1) {
         // telefono muy corto
       }
       return this.valida;
     },
-   
+
     //-- fin validaciones
 
     dialogAcepter() {
@@ -184,19 +230,17 @@ export default {
           this.updateCategorias({
             id: this.id,
             nombre: this.nombre,
-            descripcion: this.descripcion
-
-          })
+            descripcion: this.descripcion,
+          });
         } else {
           this.newCategorias({
-            
             nombre: this.nombre,
-            descripcion: this.descripcion
-          })
+            descripcion: this.descripcion,
+          });
         }
       }
     },
-  
+
     //--- accions hacia la api--
     headerToken() {
       let header = { Token: this.$store.state.token };
@@ -222,10 +266,10 @@ export default {
       axios
         .post("categoria/add", usuario, this.headerToken())
         .then(function (response) {
-          me.openDialogResponse(1, "nuevo usuario creado");
+          me.openDialogResponse(1, "nuevo categoria creado");
         })
         .catch(function (error) {
-          me.openDialogResponse(0, "no se puede crear usuaro");
+          me.openDialogResponse(0, "no se puede crear categoria");
           console.log(error);
         });
     },
@@ -234,10 +278,10 @@ export default {
       axios
         .put("categoria/update", usuario, this.headerToken())
         .then(function (response) {
-          me.openDialogResponse(1, "usuario actualizado");
+          me.openDialogResponse(1, "categoria actualizado");
         })
         .catch(function (error) {
-          me.openDialogResponse(0, "no se puede actualizar usuaro");
+          me.openDialogResponse(0, "no se puede actualizar categoria");
           console.log(error);
         });
     },
@@ -247,10 +291,10 @@ export default {
       axios
         .put("categoria/activate", { id: usuario.id }, this.headerToken())
         .then(function (response) {
-          me.openDialogResponse(1, "usuario activado");
+          me.openDialogResponse(1, "categoria activado");
         })
         .catch(function (error) {
-          me.openDialogResponse(0, "no se puede activar usuario");
+          me.openDialogResponse(0, "no se puede activar categoria");
         });
     },
     deactivateCategorias(usuario) {
@@ -258,10 +302,10 @@ export default {
       axios
         .put("categoria/deactivate", { id: usuario.id }, this.headerToken())
         .then(function (response) {
-          me.openDialogResponse(1, "usuario activado");
+          me.openDialogResponse(1, "categoria desactivada");
         })
         .catch(function (error) {
-          me.openDialogResponse(0, "no se puede activar usuario");
+          me.openDialogResponse(0, "no se puede desactivada categoria");
         });
     },
 
