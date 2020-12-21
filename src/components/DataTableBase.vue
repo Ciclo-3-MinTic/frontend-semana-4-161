@@ -71,11 +71,13 @@ export default {
     title: String,
     data: Array,
     headers: Array,
-    buscar: String,
     isloading: Boolean,
   },
   data() {
-    return {};
+    return {
+    buscar: "",
+
+    };
   },
 };
 </script>

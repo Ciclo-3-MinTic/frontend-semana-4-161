@@ -8,55 +8,36 @@
         <v-card-text>
           <v-container grid-list-md>
             <v-layout wrap>
-              <v-flex xs12 sm6 md6>
-                <v-text-field v-model="codigo" label="Código"> </v-text-field>
-              </v-flex>
-              <v-flex xs12 sm6 md6>
-                <v-select
-                  v-model="categoria"
-                  :items="categorias"
-                  label="Categoría"
-                >
-                </v-select>
-              </v-flex>
-              <v-flex xs12 sm12 md12>
+               <v-flex xs8 sm9 md10>
                 <v-text-field v-model="nombre" label="Nombre"> </v-text-field>
               </v-flex>
-              <v-flex xs12 sm6 md6>
-                <v-text-field type="number" v-model="stock" label="Stock">
-                </v-text-field>
+                <v-flex xs4 sm3 md2>
+                <v-text-field v-model="id" label="codigo" disabled v-show="typeDialog" type='text' > </v-text-field>
               </v-flex>
-              <v-flex xs12 sm6 md6>
-                <v-text-field v-model="precio_venta" label="precio_venta">
-                </v-text-field>
+           
+            
+              <v-flex xs12>
+                <v-textarea  v-model="descripcion" outlined rows="3" auto-grow label="descripcion">
+                </v-textarea>
               </v-flex>
-              <v-flex xs12 sm12 md12>
-                <v-text-field v-model="descripcion" label="Descripción">
-                </v-text-field>
-              </v-flex>
-              <v-flex xs12 sm12 md12 v-show="valida">
-                <div
-                  class="red--text"
-                  v-for="v in validaMensaje"
-                  :key="v"
-                  v-text="v"
-                ></div>
-              </v-flex>
+             
             </v-layout>
           </v-container>
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn color="blue darken-1">Cancelar</v-btn>
-          <v-btn color="blue darken-1">Guardar</v-btn>
+          <v-btn color="blue darken-1" @click="dialog = false">Cancelar</v-btn>
+          <v-btn color="blue darken-1" @click="dialogAcepter">Guardar</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
 
+
     <data-table-base
       :title="titles"
-      :data="articulos"
+      :data="dataArticulos"
       :headers="headers"
+      :isloading="isloading"
       @reroll="reroll"
       @add="add"
       @edit="edit"
@@ -66,6 +47,7 @@
     </data-table-base>
   </v-layout>
 </template>
+
 <script>
 import axios from "axios";
 import DataTableBase from "@/components/DataTableBase.vue";
@@ -76,83 +58,43 @@ export default {
   data() {
     return {
       dialog: false,
-      title: "articulo",
-      titles: "articulos",
-      articulos: [
-        {
-          codigo: "1",
-          nombre: "a",
-          categoria_nombre: "aa",
-          stock: 0,
-          precio_venta: 1000,
-          descripcion: "loren loren loren",
-          estado: 0,
-          opciones: 0,
-        },
-        {
-          codigo: "2",
-          nombre: "b",
-          categoria_nombre: "bb",
-          stock: 1,
-          precio_venta: 200,
-          descripcion: "loren loren loren",
-          estado: 1,
-          opciones: 1,
-        },
-        {
-          codigo: "3",
-          nombre: "c",
-          categoria_nombre: "cc",
-          stock: 40,
-          precio_venta: 500,
-          descripcion: "loren loren loren",
-          estado: 0,
-          opciones: 2,
-        },
-        {
-          codigo: "4",
-          nombre: "d",
-          categoria_nombre: "dd",
-          stock: 0,
-          precio_venta: 100,
-          descripcion: "loren loren loren",
-          estado: 1,
-          opciones: 3,
-        },
-        {
-          codigo: "4",
-          nombre: "d",
-          categoria_nombre: "dd",
-          stock: 0,
-          precio_venta: 100,
-          descripcion: "loren loren loren",
-          estado: 1,
-          opciones: 3,
-        },
-      ],
+      dialogpass: false,
+      dialogAlert: false,
+      typeDialog: 0, //add=0, edit=1;
+      isloading: true,
+      title: "Articulo",
+      titles: "Articulos",
+      dataArticulos: [],
+      roles: [],
+      tipo_documentos: [],
       headers: [
         { text: "Código", value: "codigo", sortable: true, align: "center" },
         { text: "Nombre", value: "nombre", sortable: true, align: "center" },
+        { text: "articulo", value: "categoria.nombre", sortable: true, align: "center" },
         {
-          text: "Categoría",
-          value: "categoria.nombre",
-          sortable: true,
-          align: "center",
-        },
-        { text: "Stock", value: "stock", sortable: true, align: "center" },
-        {
-          text: "Precio Venta",
-          value: "precio_venta",
-          sortable: true,
-          align: "end",
-        },
-        {
-          text: "Descripción",
+          text: "Descripcion",
           value: "descripcion",
           sortable: false,
           align: "center",
         },
-        { text: "Estado", value: "estado", sortable: true, align: "center" },
+        {
+          text: "Precio",
+          value: "precio_venta",
+          sortable: true,
+          align: "center",
+        },
+        {
+          text: "Stock",
+          value: "stock",
+          sortable: true,
+          align: "center",
+        },
+        {
+          text: "Estado",
+          value: "estado",
+          sortable: true,
+          align: "center",
+        },
         {
           text: "Opciones",
           value: "opciones",
@@ -160,101 +102,186 @@ export default {
           align: "center",
         },
       ],
-      
 
-      id: "",
-      editedIndex: -1,
-      categoria: "",
-      categorias: [],
-      codigo: "",
-      nombre: "",
-      stock: 0,
-      precio_venta: 0,
-      descripcion: "",
       valida: 0,
-      validaMensaje: [],
-      adModal: 0,
-      adAccion: 0,
-      adNombre: "",
-      adId: "",
+      id: "",
+      nombre: "",
+      descripcion: "",
+      estado: 0
     };
   },
-  computed: {
-    formTitle() {
-      /* return this.editedIndex === -1 ? "Nuevo registro" : "Editar registro"; */
-    },
-  },
-  watch: {
-    dialog(val) {
-      /* val || this.close(); */
-    },
-  },
+
   created() {
-    /* this.listar();
-    this.selectCategoria(); */
+    this.listar();
   },
   methods: {
     editItem(item) {
-      
-     /*  this.categoria = item.categoria.id; */
-      this.codigo = item.codigo;
-      this.nombre = item.nombre;
-      this.stock = item.stock;
-      this.precio_venta = item.precio_venta;
-      this.descripcion = item.descripcion;
-      this.editedIndex = 1;
+      (this.id = item.id),
+        (this.nombre = item.nombre),
+        (this.descripcion = item.descripcion),
+        (this.estado = item.estado)
+       
     },
     clearItem() {
-      
-     /*  this.categoria = item.categoria.id; */
-      this.codigo = "";
-      this.nombre = "";
-      this.stock = "";
-      this.precio_venta = "";
-      this.descripcion = "";
-      this.editedIndex = "";
+       (this.id = ""),
+        (this.nombre = ""),
+        (this.descripcion = ""),
+        (this.estado = "")
     },
-    activarDesactivarMostrar(accion, item) {
-      this.adModal = 1;
-      this.adNombre = item.nombre;
-      this.adId = item.id;
-      if (accion == 1) {
-        this.adAccion = 1;
-      } else if (accion == 2) {
-        this.adAccion = 2;
-      } else {
-        this.adModal = 0;
-      }
-    },
-    activarDesactivarCerrar() {
-      this.adModal = 0;
-    },
-
-    closeInfo() {
-      this.dialog = false;
-    },
-    openInfo(){
-      this.dialog = true;
-    },
-
+    ///----inicio metodos de data table base
     reroll() {
-      console.log("reroll");
+      this.isloading = true;
+
+      this.listar();
     },
     add() {
+      this.typeDialog = 0;
       this.clearItem();
-      this.openInfo();
+      this.openDialog();
     },
     edit(item) {
-      console.log(item);
+      this.typeDialog = 1;
       this.editItem(item);
-      this.openInfo();
+      this.openDialog();
     },
     desactive(item) {
-      console.log("desactive");
+      this.isloading = true;
+      this.deactivateArticulo(item);
     },
     active(item) {
-      console.log("active");
+      this.isloading = true;
+      this.activateArticulo(item);
     },
+    //----fin metodos data table base
+
+    //-- inicio dialogos
+    openDialog() {
+      this.dialog = true;
+    },
+    closeDialog() {
+      this.clearItem();
+      this.dialog = false;
+      this.typeDialog = 0;
+    },
+
+   
+    openDialogResponse(type, mensaje) {
+      this.reroll();
+
+      this.closeDialog();
+      this.isloading = false;
+      console.log(mensaje);
+    },
+    //-- fin dialogos
+
+    //---inicio validaciones
+    validar() {
+      this.valida = 0;
+
+      
+      if (this.nombre.length < 1 || this.nombre.length > 50) {
+        // nombre muy corto o muy largo
+      }
+     
+      if (this.descripcion < 1) {
+        // telefono muy corto
+      }
+      return this.valida;
+    },
+   
+    //-- fin validaciones
+
+    dialogAcepter() {
+      if (this.validar) {
+        if (this.typeDialog) {
+          this.updateArticulo({
+            id: this.id,
+            nombre: this.nombre,
+            descripcion: this.descripcion
+
+          })
+        } else {
+          this.newArticulo({
+            
+            nombre: this.nombre,
+            descripcion: this.descripcion
+          })
+        }
+      }
+    },
+  
+    //--- accions hacia la api--
+    headerToken() {
+      let header = { Token: this.$store.state.token };
+      return { headers: header };
+    },
+
+    listar() {
+      let me = this;
+      axios
+        .get("articulo/list", this.headerToken())
+        .then(function (response) {
+          me.dataArticulos = response.data;
+          me.isloading = false;
+        })
+        .catch(function (error) {
+          me.isloading = false;
+          console.log(error);
+        });
+    },
+
+    newArticulo(articulo) {
+      let me = this;
+      axios
+        .post("articulo/add", articulo, this.headerToken())
+        .then(function (response) {
+          me.openDialogResponse(1, "nuevo articulo creado");
+        })
+        .catch(function (error) {
+          me.openDialogResponse(0, "no se puede crear usuaro");
+          console.log(error);
+        });
+    },
+    updateArticulo(articulo) {
+      let me = this;
+      axios
+        .put("articulo/update", articulo, this.headerToken())
+        .then(function (response) {
+          me.openDialogResponse(1, "articulo actualizado");
+        })
+        .catch(function (error) {
+          me.openDialogResponse(0, "no se puede actualizar usuaro");
+          console.log(error);
+        });
+    },
+
+    activateArticulo(articulo) {
+      let me = this;
+      axios
+        .put("articulo/activate", { id: articulo.id }, this.headerToken())
+        .then(function (response) {
+          me.openDialogResponse(1, "articulo activado");
+        })
+        .catch(function (error) {
+          me.openDialogResponse(0, "no se puede activar articulo");
+        });
+    },
+    deactivateArticulo(articulo) {
+      let me = this;
+      axios
+        .put("articulo/deactivate", { id: articulo.id }, this.headerToken())
+        .then(function (response) {
+          me.openDialogResponse(1, "articulo activado");
+        })
+        .catch(function (error) {
+          me.openDialogResponse(0, "no se puede activar articulo");
+        });
+    },
+
+    //--- fin accions hacia la api--
   },
 };
 </script>
+
+<style>
+</style>
