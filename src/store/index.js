@@ -8,7 +8,8 @@ Vue.use(Vuex);
 export default new Vuex.Store({
     state: {
         token: null,
-        usuario: null
+        usuario: null,
+        derechos: null,
     },
     mutations: {
         setToken(state, token) {
@@ -16,6 +17,9 @@ export default new Vuex.Store({
         },
         setUsuario(state, usuario) {
             state.usuario = usuario;
+        },
+        setDerechos(state, derechos) {
+            state.derechos = derechos;
         }
     },
     actions: {
@@ -29,7 +33,7 @@ export default new Vuex.Store({
         autoLogin({
             commit
         }) {
-            console.log("autologin");
+
             let token = localStorage.getItem("token");
             if (token) {
                 commit("setToken", token);
@@ -45,11 +49,18 @@ export default new Vuex.Store({
         }) {
             commit("setToken", null);
             commit("setUsuario", null);
+            commit("setDerechos", null);
             localStorage.removeItem("token");
             router.push({
                 name: 'LoginAdmin'
             });
-        }
+        },
+        guardarDerechos({
+            commit
+        }, derechos) {
+            commit("setDerechos", derechos)
+            
+        },
     },
     modules: {}
 });

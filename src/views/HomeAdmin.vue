@@ -77,6 +77,7 @@
         <v-app-bar :clipped-left="true" app>
           <v-app-bar-nav-icon
             @click.stop="primaryDrawer.model = !primaryDrawer.model"
+            :loading='isloading'
           ></v-app-bar-nav-icon>
           <v-toolbar-title>Vuetify</v-toolbar-title>
         </v-app-bar>
@@ -92,8 +93,10 @@
           </v-container>
         </v-main>
 
-        <v-footer app>
-          <span class="px-4">&copy; {{ new Date().getFullYear() }}</span>
+        <v-footer app class="justify-center">
+          <span class="px-4 text-center"
+            >&copy; {{ new Date().getFullYear() }}</span
+          >
         </v-footer>
       </v-app>
     </v-app>
@@ -101,6 +104,7 @@
 </template>
 
 <script>
+import axios from "axios";
 export default {
   name: "HomeAdmin",
 
@@ -112,14 +116,22 @@ export default {
         model: null,
         type: "default (no property)",
       },
+      rolUser:{},
+      dataRoles: {},
+      isloading: true,
 
       rol: "",
       nombre: "",
       email: "",
     };
   },
-
-  
+  created() {
+    let user = this.$store.state.usuario;
+    this.rol = user.rol;
+    this.nombre = user.nombre;
+    this.email = user.email;
+    this.listarRoles();
+  },
   methods: {
     salir() {
       this.$store.dispatch("salirAdmin");
@@ -133,18 +145,28 @@ export default {
       this.estado = 1;
     },
 
-    edituser(usuario){
+    edituser(usuario) {},
+    headerToken() {
+      let header = { Token: this.$store.state.token };
+      return { headers: header };
+    },
 
-    }
+    listarRoles() {
+      let me = this;
+      axios
+        .get("usuario/listRoles", this.headerToken())
+        .then(function (response) {
+          me.derechos = response.data[me.rol];
+          me.isloading = false;
+          me.$store.dispatch("guardarDerechos", me.derechos)
+          
+        })
+        .catch(function (error) {
+          me.isloading = false;
+          console.log(error);
+        });
+    },
   },
-  created() {
-    let user =this.$store.state.usuario;
-    
-    this.rol = user.rol,
-    this.nombre= user.nombre,
-    this.email=user.email
-    
-  }
 };
 </script>
 

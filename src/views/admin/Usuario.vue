@@ -89,11 +89,39 @@
       </v-card>
     </v-dialog>
 
+    <v-snackbar
+      v-model="dialogAlert"
+      :timeout="timeout"
+      center
+      shaped
+      bottom
+      right
+      transition="slide-y-reverse-transition"
+      :color="coloAlert"
+    >
+      <div class="text-center title text">
+        {{ textDialogAler }}
+      </div>
+
+      <template v-slot:action="{ attrs }">
+        <v-btn
+          small
+          icon
+          class="elevation-0"
+          v-bind="attrs"
+          @click="snackbar = dialogAlert"
+        >
+          <v-icon>mdi-close</v-icon>
+        </v-btn>
+      </template>
+    </v-snackbar>
+
     <data-table-base
       :title="titles"
       :data="dataUsers"
       :headers="headers"
       :isloading="isloading"
+      :derechos="derechos"
       @reroll="reroll"
       @add="add"
       @edit="edit"
@@ -111,13 +139,22 @@ export default {
   components: {
     DataTableBase,
   },
+
   data() {
     return {
-      dialog: false,
       dialogpass: false,
-      dialogAlert: false,
+
+      dialog: false,
       typeDialog: 0, //add=0, edit=1;
+
+      dialogAlert: false,
+      textDialogAler: "",
+      coloAlert: "",
+      timeout: 2000,
+
+      derechos: {},
       isloading: true,
+
       title: "Usuario",
       titles: "Usuarios",
       dataUsers: [],
@@ -181,7 +218,7 @@ export default {
 
   created() {
     this.listar();
-
+    this.derechos = this.$store.state.derechos.usuarios;
   },
   methods: {
     editItem(item) {

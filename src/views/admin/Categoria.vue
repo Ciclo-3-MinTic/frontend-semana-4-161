@@ -81,6 +81,7 @@
       :data="dataCategorias"
       :headers="headers"
       :isloading="isloading"
+      :derechos="derechos"
       @reroll="reroll"
       @add="add"
       @edit="edit"
@@ -100,21 +101,23 @@ export default {
   },
   data() {
     return {
-      dialog: false,
       dialogpass: false,
+
+      dialog: false,
+      typeDialog: 0, //add=0, edit=1;
 
       dialogAlert: false,
       textDialogAler: "",
       coloAlert: "",
       timeout: 2000,
 
-      typeDialog: 0, //add=0, edit=1;
+      derechos: {},
       isloading: true,
+
       title: "Usuario",
       titles: "Usuarios",
       dataCategorias: [],
-      roles: [],
-      tipo_documentos: [],
+      
       headers: [
         { text: "Código", value: "id", sortable: true, align: "center" },
         { text: "Nombre", value: "nombre", sortable: true, align: "center" },
@@ -148,6 +151,7 @@ export default {
 
   created() {
     this.listar();
+    this.derechos = this.$store.state.derechos.categorias;
   },
   methods: {
     editItem(item) {

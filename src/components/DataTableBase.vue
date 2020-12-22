@@ -8,7 +8,6 @@
         class="elevation-0"
         @click="$emit('reroll')"
         :loading="isloading"
-        
         ><v-icon>mdi-update</v-icon></v-btn
       >
       <v-spacer></v-spacer>
@@ -26,9 +25,16 @@
 
       <v-spacer></v-spacer>
 
-      <v-btn color="primary" fab small class="elevation-0" @click="$emit('add')"
-        ><v-icon>mdi-plus</v-icon></v-btn
+      <v-btn
+        color="primary"
+        fab
+        small
+        class="elevation-0"
+        @click="$emit('add')"
+        :disabled="!derechos.add"
       >
+        <v-icon>mdi-plus</v-icon>
+      </v-btn>
     </v-toolbar>
     <v-data-table
       :headers="headers"
@@ -38,21 +44,33 @@
       class="elevation-1"
     >
       <template v-slot:[`item.opciones`]="{ item }">
-        <v-icon class="mr-2" @click="$emit('edit', item)" color="accent">
+        <v-icon
+          class="mr-2"
+          @click="$emit('edit', item)"
+          color="accent"
+          :disabled="!derechos.edit"
+        >
           mdi-pencil-circle-outline</v-icon
         >
         <v-icon
           v-if="item.estado"
           color="error"
+          :disabled="!derechos.active"
           @click="$emit('desactive', item)"
         >
           mdi-close-circle-outline
         </v-icon>
 
-        <v-icon v-else @click="$emit('active', item)" color="success">
+        <v-icon
+          v-else
+          color="success"
+          :disabled="!derechos.active"
+          @click="$emit('active', item)"
+        >
           mdi-checkbox-marked-circle-outline
         </v-icon>
       </template>
+
       <template v-slot:[`item.estado`]="{ item }">
         <div v-if="item.estado">
           <span class="success--text">Activo</span>
@@ -72,11 +90,11 @@ export default {
     data: Array,
     headers: Array,
     isloading: Boolean,
+    derechos: Object,
   },
   data() {
     return {
-    buscar: "",
-
+      buscar: "",
     };
   },
 };
