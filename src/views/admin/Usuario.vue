@@ -154,6 +154,8 @@ export default {
 
       derechos: {},
       isloading: true,
+      isloadingRoles: true,
+      isloadingDocumentos: true,
 
       title: "Usuario",
       titles: "Usuarios",
@@ -217,6 +219,8 @@ export default {
   },
 
   created() {
+    this.listarRoles();
+    this.listarDocumento();
     this.listar();
     this.derechos = this.$store.state.derechos.usuarios;
     /*   console.log(new Date('2020-12-22').toISOString().substr(0, 10));
@@ -247,6 +251,8 @@ export default {
     reroll() {
       this.isloading = true;
 
+      this.listarRoles();
+      this.listarDocumento();
       this.listar();
     },
     add() {
@@ -406,6 +412,30 @@ export default {
         .then(function (response) {
           me.dataUsers = response.data;
           me.isloading = false;
+        })
+        .catch(function (error) {
+          me.isloading = false;
+          console.log(error);
+        });
+    },
+    listarRoles() {
+      let me = this;
+      axios
+        .get("usuario/listTypeRoles", this.headerToken())
+        .then(function (response) {
+          me.roles = response.data;
+        })
+        .catch(function (error) {
+          me.isloading = false;
+          console.log(error);
+        });
+    },
+    listarDocumento() {
+      let me = this;
+      axios
+        .get("usuario/listTypeDocumento", this.headerToken())
+        .then(function (response) {
+          me.tipo_documentos = response.data;
         })
         .catch(function (error) {
           me.isloading = false;
