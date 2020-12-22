@@ -114,8 +114,8 @@ export default {
       derechos: {},
       isloading: true,
 
-      title: "Usuario",
-      titles: "Usuarios",
+      title: "Categoria",
+      titles: "Categorias",
       dataCategorias: [],
       
       headers: [
