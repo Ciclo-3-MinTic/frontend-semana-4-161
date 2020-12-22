@@ -605,6 +605,7 @@
 </template>
 
 <script>
+    import axios from "axios";
   export default {
     data () {
       return {
@@ -629,13 +630,13 @@
       }
     },
     created(){
-      
+      this.listar();
     },
     methods: {    
       listar() {
       let me = this;
       axios
-        .get("articulo/listByCategorias", this.headerToken())
+        .get("articulo/listByCategorias")
         .then(function (response) {
           me.dataArticulos = response.data;
           me.isloading = false;
@@ -646,19 +647,7 @@
           console.log(error);
         });
     },
-    listar_categorias() {
-      let me = this;
-      axios
-        .get("categoria/list", this.headerToken())
-        .then(function (response) {
-          me.dataCategorias = response.data;
-          me.loadingCategorias = false;
-        })
-        .catch(function (error) {
-          me.loadingCategorias = false;
-          console.log(error);
-        });
-    },
+    
     }
   }
 </script>
