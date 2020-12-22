@@ -39,8 +39,8 @@ const routes = [{
       },
       {
 
-        path: 'categotias',
-        name: 'Categotias',
+        path: 'Categorias',
+        name: 'Categorias',
         component: () => import('@/views/admin/Categoria'),
         meta: {
           admin: true

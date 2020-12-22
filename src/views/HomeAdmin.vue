@@ -17,11 +17,9 @@
                       <v-list-item>
                         <v-list-item-content class="text-right">
                           <v-list-item-title class="title">
-                            {{nombre}}
+                            {{ nombre }}
                           </v-list-item-title>
-                          <v-list-item-subtitle>{{
-                            rol
-                          }}</v-list-item-subtitle>
+                          <v-list-item-subtitle>{{ rol }}</v-list-item-subtitle>
                           <v-list-item-subtitle>{{
                             email
                           }}</v-list-item-subtitle>
@@ -49,26 +47,25 @@
                       </v-btn-toggle>
                     </v-col>
                   </v-row>
-                </v-card-text>
-              </v-card>
-
-              <v-list-item :to="{ name: 'Usuarios' }">
-                <v-list-item-action>
-                  <v-icon>mdi-table-account</v-icon>
-                </v-list-item-action>
-                <v-list-item-title> Usuarios </v-list-item-title>
-              </v-list-item>
-              <v-list-item :to="{ name: 'Articulos' }">
+                </v-card-text> </v-card
+              ><v-list-item :to="{ name: 'Articulos' }" v-show="listArticulos">
                 <v-list-item-action>
                   <v-icon>mdi-file-table-box-multiple</v-icon>
                 </v-list-item-action>
                 <v-list-item-title> Articulos </v-list-item-title>
               </v-list-item>
-              <v-list-item :to="{ name: 'Categotias' }">
+              <v-list-item :to="{ name: 'Categorias' }" v-show="listCategorias">
                 <v-list-item-action>
                   <v-icon>mdi-folder-table</v-icon>
                 </v-list-item-action>
                 <v-list-item-title> Categorias </v-list-item-title>
+              </v-list-item>
+
+              <v-list-item :to="{ name: 'Usuarios' }" v-show="listUsuarios">
+                <v-list-item-action>
+                  <v-icon>mdi-table-account</v-icon>
+                </v-list-item-action>
+                <v-list-item-title> Usuarios </v-list-item-title>
               </v-list-item>
             </template>
           </v-list>
@@ -77,7 +74,7 @@
         <v-app-bar :clipped-left="true" app>
           <v-app-bar-nav-icon
             @click.stop="primaryDrawer.model = !primaryDrawer.model"
-            :loading='isloading'
+            :loading="isloading"
           ></v-app-bar-nav-icon>
           <v-toolbar-title>Vuetify</v-toolbar-title>
         </v-app-bar>
@@ -116,13 +113,16 @@ export default {
         model: null,
         type: "default (no property)",
       },
-      rolUser:{},
-      dataRoles: {},
+
       isloading: true,
 
       rol: "",
       nombre: "",
       email: "",
+
+      listUsuarios: false,
+      listCategorias: false,
+      listArticulos: false,
     };
   },
   created() {
@@ -132,6 +132,7 @@ export default {
     this.email = user.email;
     this.listarRoles();
   },
+
   methods: {
     salir() {
       this.$store.dispatch("salirAdmin");
@@ -156,10 +157,13 @@ export default {
       axios
         .get("usuario/listRoles", this.headerToken())
         .then(function (response) {
-          me.derechos = response.data[me.rol];
+          let derechos = response.data[me.rol];
+          me.$store.dispatch("guardarDerechos", derechos);
+
+          me.listUsuarios = derechos.usuarios.list;
+          me.listCategorias = derechos.categorias.list;
+          me.listArticulos = derechos.articulos.list;
           me.isloading = false;
-          me.$store.dispatch("guardarDerechos", me.derechos)
-          
         })
         .catch(function (error) {
           me.isloading = false;

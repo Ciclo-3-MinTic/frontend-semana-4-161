@@ -29,9 +29,10 @@
         color="primary"
         fab
         small
+        v-show="derechos.add"
         class="elevation-0"
         @click="$emit('add')"
-        :disabled="!derechos.add"
+        
       >
         <v-icon>mdi-plus</v-icon>
       </v-btn>
@@ -43,7 +44,7 @@
       :loading="isloading"
       class="elevation-1"
     >
-      <template v-slot:[`item.opciones`]="{ item }">
+      <template v-slot:[`item.opciones`]="{ item }" >
         <v-icon
           class="mr-2"
           @click="$emit('edit', item)"

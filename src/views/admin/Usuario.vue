@@ -219,6 +219,8 @@ export default {
   created() {
     this.listar();
     this.derechos = this.$store.state.derechos.usuarios;
+  /*   console.log(new Date('2020-12-22').toISOString().substr(0, 10));
+    console.log(new Date('2020-12-22')-Date.now()); */
   },
   methods: {
     editItem(item) {
@@ -265,6 +267,8 @@ export default {
       this.isloading = true;
       this.activateUsuario(item);
     },
+
+    
     //----fin metodos data table base
 
     //-- inicio dialogos
