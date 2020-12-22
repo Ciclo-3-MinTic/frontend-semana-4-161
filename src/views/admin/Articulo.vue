@@ -256,10 +256,11 @@ export default {
 
     openDialogResponse(type, mensaje) {
       this.reroll();
-
+      this.textDialogAler = mensaje;
       this.closeDialog();
+       this.coloAlert = type > 0 ? "accent" : "error";
       this.isloading = false;
-      console.log(mensaje);
+       this.dialogAlert = true;
     },
     //-- fin dialogos
 

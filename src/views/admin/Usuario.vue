@@ -219,7 +219,7 @@ export default {
   created() {
     this.listar();
     this.derechos = this.$store.state.derechos.usuarios;
-  /*   console.log(new Date('2020-12-22').toISOString().substr(0, 10));
+    /*   console.log(new Date('2020-12-22').toISOString().substr(0, 10));
     console.log(new Date('2020-12-22')-Date.now()); */
   },
   methods: {
@@ -268,7 +268,6 @@ export default {
       this.activateUsuario(item);
     },
 
-    
     //----fin metodos data table base
 
     //-- inicio dialogos
@@ -290,11 +289,12 @@ export default {
     },
     openDialogResponse(type, mensaje) {
       this.reroll();
-
+      this.textDialogAler = mensaje;
       this.closeDialog();
       this.closeDialogPass();
+      this.coloAlert = type > 0 ? "accent" : "error";
       this.isloading = false;
-      console.log(mensaje);
+      this.dialogAlert = true;
     },
     //-- fin dialogos
 
