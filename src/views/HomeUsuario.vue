@@ -365,7 +365,7 @@
               Estefania Mendoza
             </h3>
             <div class="font-weight-light title mb-2">
-              "Fue una gran experiencia gracias a que me prepare y a la comodidad de las prendas de Mountain Gear "              
+              "Fue una gran experiencia gracias a que me prepare y a la comodidad de las prendas y la gran confianza que deposite en Mountain Gear"              
             </div>
           </v-card-text>
         </v-card>
