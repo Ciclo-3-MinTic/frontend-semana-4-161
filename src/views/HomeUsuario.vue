@@ -3,7 +3,7 @@
   <v-app id="menu" 
   >
     <v-app-bar app
-    color="green lighten-1"
+    color="primary"
     dark
     font="bold"
     >
@@ -60,10 +60,13 @@
       </v-flex>
     </v-layout>
   </v-container>
+
+  <div v-for="(value, key) in dataArticulos"
+  :key= key>
   <v-container>
     <v-layout>
       <v-flex ma-5 style="font-size:20px">
-          <h1 class="teal--text" style="font-family: 'Rubik', sans-serif;">Chaquetas</h1>
+          <h1 class="teal--text" style="font-family: 'Rubik', sans-serif;">{{value.nombre}}</h1>
       </v-flex>
     </v-layout>
   </v-container>
@@ -73,23 +76,34 @@
     width="1300"
   >
     <v-slide-group
-      v-model="model"
       class="pa-4"
       active-class="success"
       show-arrows
     >
       <v-slide-item
-        v-for="n in 10"
-        :key="n"
+        v-for="(item, key) in value.articulos"
+        :key="key"
         v-slot="{ active, toggle }"
       >
         <v-card
-          :color="active ? undefined : 'grey lighten-1'"
-          class="ma-4"
-          height="250"
-          width="200"
+          :color="active ? 'primary' : 'while'"
+          class="ma-4 text-center"
+          height="400"
+          width="300"
           @click="toggle"
+
         >
+        <v-container>
+          <v-layout>
+            <v-flex ml-10>
+            <v-img height="270"
+            width="210" :src="`${item.img}`"></v-img>
+            </v-flex>
+          </v-layout>
+        </v-container>
+        <h3 style="font-family: 'Rubik', sans-serif;"><b>{{item.codigo}}</b> {{item.nombre}}</h3>
+        <h4 class="ml-5" style="font-family: 'Roboto', sans-serif;">${{item.precio_venta}}</h4>
+        <p class="ml-5">{{item.descripcion}}</p>
           <v-row
             class="fill-height"
             align="center"
@@ -108,150 +122,7 @@
       </v-slide-item>
     </v-slide-group>
   </v-sheet>
-    <v-container>
-    <v-layout>
-      <v-flex ma-5 style="font-size:20px">
-          <h1 class="teal--text" style="font-family: 'Rubik', sans-serif;">Prendas Superiores</h1>
-      </v-flex>
-    </v-layout>
-  </v-container>
-  <v-sheet
-    class="mx-auto green lighten-1"
-    elevation="8"
-    width="1300"
-  >
-    <v-slide-group
-      v-model="model"
-      class="pa-4"
-      active-class="success"
-      show-arrows
-    >
-      <v-slide-item
-        v-for="n in 10"
-        :key="n"
-        v-slot="{ active, toggle }"
-      >
-        <v-card
-          :color="active ? undefined : 'grey lighten-1'"
-          class="ma-4"
-          height="250"
-          width="200"
-          @click="toggle"
-        >
-          <v-row
-            class="fill-height"
-            align="center"
-            justify="center"
-          >
-            <v-scale-transition>
-              <v-icon
-                v-if="active"
-                color="white"
-                size="48"
-                v-text="'mdi-check-circle-outline'"
-              ></v-icon>
-            </v-scale-transition>
-          </v-row>
-        </v-card>
-      </v-slide-item>
-    </v-slide-group>
-  </v-sheet>
-    <v-container>
-    <v-layout>
-      <v-flex ma-5 style="font-size:20px">
-          <h1 class="teal--text" style="font-family: 'Rubik', sans-serif;">Prendas inferiores</h1>
-      </v-flex>
-    </v-layout>
-  </v-container>
-  <v-sheet
-    class="mx-auto green lighten-1"
-    elevation="8"
-    width="1300"
-  >
-    <v-slide-group
-      v-model="model"
-      class="pa-4"
-      active-class="success"
-      show-arrows
-    >
-      <v-slide-item
-        v-for="n in 10"
-        :key="n"
-        v-slot="{ active, toggle }"
-      >
-        <v-card
-          :color="active ? undefined : 'grey lighten-1'"
-          class="ma-4"
-          height="250"
-          width="200"
-          @click="toggle"
-        >
-          <v-row
-            class="fill-height"
-            align="center"
-            justify="center"
-          >
-            <v-scale-transition>
-              <v-icon
-                v-if="active"
-                color="white"
-                size="48"
-                v-text="'mdi-check-circle-outline'"
-              ></v-icon>
-            </v-scale-transition>
-          </v-row>
-        </v-card>
-      </v-slide-item>
-    </v-slide-group>
-  </v-sheet>
-    <v-container >
-    <v-layout>
-      <v-flex ma-5 style="font-size:20px">
-          <h1 class="teal--text" style="font-family: 'Rubik', sans-serif;">Accesorios</h1>
-      </v-flex>
-    </v-layout>
-  </v-container>
-  <v-sheet
-    class="mx-auto green lighten-1"
-    elevation="8"
-    width="1300"
-  >
-    <v-slide-group
-      v-model="model"
-      class="pa-4"
-      active-class="success"
-      show-arrows
-    >
-      <v-slide-item
-        v-for="n in 6"
-        :key="n"
-        v-slot="{ active, toggle }"
-      >
-        <v-card
-          :color="active ? undefined : 'grey lighten-1'"
-          class="ma-4"
-          height="250"
-          width="200"
-          @click="toggle"
-        >
-          <v-row
-            class="fill-height"
-            align="center"
-            justify="center"
-          >
-            <v-scale-transition>
-              <v-icon
-                v-if="active"
-                color="white"
-                size="48"
-                v-text="'mdi-check-circle-outline'"
-              ></v-icon>
-            </v-scale-transition>
-          </v-row>
-        </v-card>
-      </v-slide-item>
-    </v-slide-group>
-  </v-sheet>
+  </div>
   <br>
   <v-divider id="Informacion" mt-1 class="green darken-4">Informacion</v-divider>
   <v-container>
@@ -494,7 +365,7 @@
               Estefania Mendoza
             </h3>
             <div class="font-weight-light title mb-2">
-              "Fue una gran experiencia gracias a que me prepare y a la comodidad de las prendas de Mountain Gear"              
+              "Fue una gran experiencia gracias a que me prepare y a la comodidad de las prendas de Mountain Gear "              
             </div>
           </v-card-text>
         </v-card>
@@ -598,6 +469,10 @@
         cols="12"
         style="font-family: 'Roboto', sans-serif;"
       >
+      <v-btn depressed
+      href="https://github.com/Ciclo-3-MinTic">
+          Git-Hub
+        </v-btn>
         {{ new Date().getFullYear() }} — <strong>Sprint 4 -MinTic</strong>
       </v-col>
     </v-footer>
@@ -609,6 +484,7 @@
   export default {
     data () {
       return {
+        dataArticulos:{},
         items: [
           {
             src: 'https://www.exploresquamish.com/files/dmo_experience/lead/Hiking%202224%20x%20800_0.jpg',

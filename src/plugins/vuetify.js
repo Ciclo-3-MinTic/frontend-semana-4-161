@@ -11,13 +11,32 @@ export default new Vuetify({
       },
     themes: {
       light: {
-        primary: '#ee44aa',
+        primary: '#66BB6A',
         secondary: '#424242',
+        text:'#000000',
+
         accent: '#82B1FF',
         error: '#FF5252',
-        info: '#2196F3',
+        
+        warning: '#FFC107',
         success: '#4CAF50',
-        warning: '#FFC107'
+        info: '#2196F3',
+
+        while: '#ffffff'
+      },
+      Dark: {
+        primary: '#66BB6A',
+        secondary: '#424242',
+        text:'#000000',
+        
+        accent: '#82B1FF',
+        error: '#FF5252',
+        
+        warning: '#FFC107',
+        success: '#4CAF50',
+        info: '#2196F3',
+
+        while: '#ffff'
       },
     },
   },
