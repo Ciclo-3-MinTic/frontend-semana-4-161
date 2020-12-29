@@ -470,9 +470,13 @@
         style="font-family: 'Roboto', sans-serif;"
       >
       <v-btn depressed
-      href="https://github.com/Ciclo-3-MinTic">
+      href="https://github.com/Ciclo-3-MinTic" target="_blank">
           Git-Hub
         </v-btn>
+        <br> 
+        <br>
+        <v-divider id="Footer" class="green darken-4">footer Final</v-divider>
+        <br>
         {{ new Date().getFullYear() }} — <strong>Sprint 4 -MinTic</strong>
       </v-col>
     </v-footer>
