@@ -101,8 +101,8 @@
             </v-flex>
           </v-layout>
         </v-container>
-        <h3 style="font-family: 'Rubik', sans-serif;"><b>{{item.codigo}}</b> {{item.nombre}}</h3>
-        <h4 class="ml-5" style="font-family: 'Roboto', sans-serif;">${{item.precio_venta}}</h4>
+        <h3 style="font-family: 'Rubik', sans-serif"><b>{{item.codigo}}</b> {{item.nombre}}</h3>
+        <h4 class="ml-5" style="font-family: 'Roboto', sans-serif">${{item.precio_venta}}</h4>
         <p class="ml-5">{{item.descripcion}}</p>
           <v-row
             class="fill-height"
